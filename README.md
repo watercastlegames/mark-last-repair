@@ -153,4 +153,4 @@ npx --yes esbuild assets/js/app-round11.js \
 
 ---
 
-Made with vibe coding by [Water Castle Games](https://github.com/watercastlegames)
+Made with vibe coding by [Water Castle Games](https://github.com/watercastlegames) · [Public source repository](https://github.com/watercastlegames/mark-last-repair)
