@@ -5,8 +5,7 @@ const baseAttempt = () => ({ id: null, status: 'not_started', phase: 'CASE_HOME'
 const emptyFinalDraft = () => ({ victim:'', killer:'', place:'', method:'', motive:'', truth:'' });
 
 export const state = {
-  mode: new URLSearchParams(location.search).get('demo') === '1' ? 'demo' : 'server',
-  config: { googleClientId: '', ready: false },
+  mode: 'demo',
   user: null,
   attempt: baseAttempt(),
   hints: {},

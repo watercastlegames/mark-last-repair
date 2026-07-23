@@ -69,7 +69,7 @@ python -m http.server 8080
 브라우저에서 다음 주소를 엽니다.
 
 ```text
-http://localhost:8080/?demo=1
+http://localhost:8080/
 ```
 
 정적 서버만으로도 개인 기록 모드와 Puter AI 기능을 체험할 수 있습니다. Google 로그인과 공용 랭킹을 사용하려면 [Firebase 설정 안내](FIREBASE_SETUP.md)를 따라 별도 프로젝트를 연결하세요.
@@ -81,7 +81,6 @@ http://localhost:8080/?demo=1
 - 현재 AI 후보 모델: `gpt-5.4-nano`, `gpt-5-nano`
 - 로그인·랭킹: Firebase Authentication, Cloud Firestore
 - 로컬 저장: Web Storage
-- 선택형 서버 구성: Classic ASP, SQL Server, Python Google 토큰 검증 서비스
 - 이미지: GPT 이미지 생성과 게임용 후처리
 - 개발 방식: GPT와 대화하는 바이브코딩
 
@@ -97,8 +96,6 @@ crimeGame/
 │  ├─ images/                 # 라운드·결말 이미지와 아이콘
 │  └─ media/                  # GitHub용 플레이 GIF
 ├─ docs/images/               # 공개용 플레이 스크린샷
-├─ api/, inc/, sql/           # 선택형 Classic ASP 서버 기록 시스템
-├─ auth-service/              # Google 토큰 검증 보조 서비스
 ├─ firestore.rules            # Firestore 보안 규칙
 └─ CUSTOM_THEME_GUIDE.md      # 새로운 사건 테마 제작 안내
 ```
@@ -122,7 +119,7 @@ npx --yes esbuild assets/js/app-round11.js \
   --bundle \
   --format=iife \
   --target=es2020 \
-  --outfile=assets/js/game-round51.bundle.js
+  --outfile=assets/js/game-round54.bundle.js
 ```
 
 다른 파일명을 사용한다면 `index.html`의 번들 주소도 함께 변경하세요.

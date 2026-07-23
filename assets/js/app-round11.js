@@ -1,6 +1,5 @@
 import { CASE_OVERVIEW, CASE_OVERVIEW_SUMMARY, CASE_OVERVIEW_DETAILS, ROUNDS, COMPANIONS, TIME_ROOM_HINTS, TIME_ROOM_HINT_TERMS, ENDING } from './case-data.js';
 import { state, notify, patchAttempt, resetDemo, restoreLocalProgress } from './state.js?v=round31';
-import { api } from './api.js';
 import { openPopup, closePopup, setPopupBusy } from './popup.js';
 import { companionHint, finalCompanionOpinion, judgeQuestion, answerText, ensurePuter, isValidCompanionHint, isValidFinalCompanionOpinion } from './puter-ai.js?v=round41';
 import { firebaseConfigured, firebaseDomainAuthorized, signInGoogle, saveCloudRecord, loadCloudRankings, cloudErrorMessage } from './firebase-ranking.js';
@@ -75,20 +74,9 @@ function renderDashboard(){
 
 async function startOrResume(){
   if(state.attempt.status==='completed'){openResult();return;}
-  if(state.mode==='demo'){if(state.attempt.status==='not_started'){resetDemo();openCaseStart();}else openByPhase();return;}
-  if(!state.user){openLogin();return;}
-  try{const data=await api.start();applyServerState(data);openByPhase();}catch(e){toast(e.message,true);}
+  if(state.attempt.status==='not_started'){resetDemo();openCaseStart();}
+  else openByPhase();
 }
-function openLogin(){
-  const configured=state.config.googleClientId;
-  openPopup({kicker:'공식 기록 도전',title:'Google 로그인 후 사건을 시작하세요',lead:'공식 기록과 사건당 1회 도전 제한은 Google 계정을 기준으로 적용됩니다.',body:configured?'<div id="googlePopupButton"></div>':'<div class="confirm-box">공식 기록 접수는 현재 준비 중입니다. 지금은 개인 기록으로 사건을 진행할 수 있습니다.</div>',actions:[{label:'개인 기록으로 사건 시작',onClick:()=>{closePopup();state.mode='demo';resetDemo();openCaseStart();}}],dismissible:true});
-  if(configured)renderGoogleButton('googlePopupButton');
-}
-function renderGoogleButton(id){
-  if(!window.google?.accounts?.id)return;
-  window.google.accounts.id.renderButton(document.getElementById(id),{theme:'outline',size:'large',text:'signin_with',shape:'rectangular',locale:'ko',width:320});
-}
-window.handleGoogleCredential=async({credential})=>{setPopupBusy(true,'Google 계정을 확인하고 있습니다…');try{const data=await api.authGoogle(credential);state.user=data.user;state.attempt={...state.attempt,...(data.attempt||{})};notify();closePopup();await startOrResume();}catch(e){setPopupBusy(false);toast(e.message,true);}};
 
 function openCaseStart(){
   setPhase('CASE_START');
@@ -116,7 +104,7 @@ function openClueSelect(){
 }
 async function openClue(clueId){
   const round=currentRound();const clue=round.clues.find(c=>c.id===clueId);const already=state.attempt.clueIds.includes(clueId);
-  if(!already){state.attempt.clueIds.push(clueId);if(state.mode==='server'){try{const data=await api.clue({attemptId:state.attempt.id,roundNo:round.no,clueId});applyServerState(data);}catch(e){state.attempt.clueIds=state.attempt.clueIds.filter(x=>x!==clueId);toast(e.message,true);return;}}notify();}
+  if(!already){state.attempt.clueIds.push(clueId);notify();}
   setPhase('CLUE_RESULT');
   const done=state.attempt.clueIds.filter(id=>id.startsWith(`r${round.no}_`)).length===3;
   openPopup({kicker:`ROUND ${round.no} · 현장 단서 ${done?'3/3':''}`,title:clue.title,lead:already?'이미 확인한 단서입니다. 다시 확인해도 시간 비용은 없습니다.':'현장 조사 결과',body:`<div class="result-box"><small>획득 단서</small><b>${esc(clue.title)}</b><p>${esc(clue.text)}</p></div>`,actions:[{label:done?'동료 의견 듣기 →':'다음 단서 찾기 →',primary:true,onClick:done?openCompanionSelect:openClueSelect}]});
@@ -132,11 +120,8 @@ function openTimeRoom(origin='companion'){
 async function enterTimeRoom(origin='companion'){
   const round=currentRound();const back=returnFromTimeRoom(origin);setPopupBusy(true,'시간의 방에서 추가 기록을 찾고 있습니다…');
   try{
-    let hintNo=timeRoomCount(round.no)+1;
-    if(state.mode==='server'){
-      const data=await api.timeRoom({attemptId:state.attempt.id,roundNo:round.no});
-      hintNo=Number(data.hintNo)||hintNo;state.attempt.penaltyMs=Number(data.totalPenaltyMs)||state.attempt.penaltyMs+120000;
-    }else state.attempt.penaltyMs+=120000;
+    const hintNo=timeRoomCount(round.no)+1;
+    state.attempt.penaltyMs+=120000;
     state.timeRoomVisits[round.no]=hintNo;notify();flashPenalty('+2:00');
     const hint=TIME_ROOM_HINTS[round.no][hintNo-1];
     const limit=timeRoomLimit(round.no);openPopup({kicker:`ROUND ${round.no} · 시간의 방 ${hintNo}/${limit}`,title:'추가 정보를 획득했습니다',lead:`개인 시간 +2:00 · 이번 라운드 힌트 ${hintNo}/${limit}`,body:`<div class="time-room-reveal"><span>새로운 단서</span><b>${esc(hint)}</b><p>이 정보는 사건 기록에 보관되며, 아직 의견을 듣지 않은 동료들에게도 공유됩니다.</p></div>`,actions:[{label:hintNo<limit?'힌트 하나 더 보기 (+2:00)':'확인한 힌트 다시 보기',onClick:()=>openTimeRoom(origin)},{label:'수사로 돌아가기 →',primary:true,onClick:back}]});
@@ -154,12 +139,6 @@ async function openCompanion(companionId){
     setPopupBusy(true,`${companion.name}, 의견을 정리하고 있습니다… 잠시만 기다려 주세요.`);
     try{
       hint=await companionHint(round.no,companionId,companionContext);
-      if(state.mode==='server'){
-        const data=await api.hint({attemptId:state.attempt.id,roundNo:round.no,companionId,question:hint.question,comment:hint.comment});
-        const serverHint=data.hint||hint;
-        if(!isValidCompanionHint(serverHint,round.no,companionId,[],[],companionContext.allowedContext))throw new Error('저장된 동료 의견이 공개 단서 규칙에 맞지 않습니다.');
-        hint={...serverHint,source:'puter'};
-      }
       state.hints[hintKey]={...hint,source:'puter',timeRoomFactCount:companionContext.currentFacts.length,questionFactCount:companionContext.questionFacts.length,companionId,name:companion.name};
     }catch(e){
       setPopupBusy(false);
@@ -185,10 +164,9 @@ function openQuestionConfirm(text){
   openPopup({kicker:`ROUND ${round.no} · 질문 확정`,title:'이 질문을 확정할까요?',lead:'확정하면 개인 시간이 1분 증가하고, 취소할 수 없습니다.',body:`<div class="confirm-box"><b>질문</b><br>${esc(text)}<br><br><b>비용</b> 개인 시간 +1:00</div>`,actions:[{label:'문장 바꾸기',onClick:()=>openQuestionSelect(text)},{label:'질문 확정 →',primary:true,onClick:()=>commitQuestion(text)}]});
 }
 async function commitQuestion(text){
-  const round=currentRound();setPhase('QUESTION_PENDING');setPopupBusy(true,'집사가 판단하고 있습니다…');let questionId=`demo-${Date.now()}`;
+  const round=currentRound();setPhase('QUESTION_PENDING');setPopupBusy(true,'집사가 판단하고 있습니다…');
   try{const category=await judgeQuestion(text,round.no);let answer=category;
-    if(state.mode==='server'){const reserved=await api.reserve({attemptId:state.attempt.id,roundNo:round.no,text});questionId=reserved.questionId;state.attempt.questionCount++;state.attempt.totalQuestions++;state.attempt.penaltyMs+=60000;notify();flashPenalty();}else{state.attempt.questionCount++;state.attempt.totalQuestions++;state.attempt.penaltyMs+=60000;notify();flashPenalty();}
-    if(state.mode==='server'){const committed=await api.commit({questionId,answerCategory:category,source:'puter'});answer=committed.answerCategory||category;applyServerState(committed);}
+    state.attempt.questionCount++;state.attempt.totalQuestions++;state.attempt.penaltyMs+=60000;notify();flashPenalty();
     state.questions.push({roundNo:round.no,text,category:answer,answerText:answerText[answer]||answerText.MAYBE});notify();openQuestionResult(text,answer);
   }catch(e){toast(e.message,true);openQuestionSelect(text);}
 }
@@ -202,9 +180,9 @@ function openRoundSummary(){
   openPopup({kicker:`ROUND ${round.no} · 조사 정리`,title:`ROUND ${round.no} 조사가 끝났습니다`,lead:'이번 라운드에서 얻은 정보를 정리합니다.',body:`<div class="summary-grid"><div><span>확인 단서</span><b>3개</b></div><div><span>시간의 방</span><b>${timeRoomCount(round.no)}회</b></div><div><span>사용 질문</span><b>${q}회</b></div><div><span>누적 시간</span><b>${formatTime(elapsedMs())}</b></div></div>`,actions:[{label:round.no<4?'다음 그림 공개 →':'최종 발의로 이동 →',primary:true,onClick:advanceRound},{label:'사건 기록',onClick:openHistory}]});
 }
 async function advanceRound(){
-  try{if(state.mode==='server'){const data=await api.advance({attemptId:state.attempt.id,roundNo:state.attempt.roundNo});applyServerState(data);}else{if(state.attempt.roundNo<4){state.attempt.roundNo++;state.attempt.questionCount=0;state.attempt.phase='ROUND_INTRO';notify();}else{setPhase('FINAL_ANSWER');}}
-    if(state.attempt.roundNo>4||state.attempt.phase==='FINAL_ANSWER')openFinalAnswer();else openRoundIntro();
-  }catch(e){toast(e.message,true);}
+  if(state.attempt.roundNo<4){state.attempt.roundNo++;state.attempt.questionCount=0;state.attempt.phase='ROUND_INTRO';notify();}
+  else setPhase('FINAL_ANSWER');
+  if(state.attempt.phase==='FINAL_ANSWER')openFinalAnswer();else openRoundIntro();
 }
 const finalFields={victim:'ansVictim',killer:'ansKiller',place:'ansPlace',method:'ansMethod',motive:'ansMotive',truth:'ansTruth'};
 const finalFieldLabels={victim:'피해자',killer:'가해자',place:'장소',method:'사망 원인',motive:'동기',truth:'숨겨진 진실'};
@@ -252,9 +230,8 @@ async function submitFinal(){
   syncFinalDraft();const answers=Object.fromEntries(Object.entries(state.finalDraft).map(([field,value])=>[field,value.trim()]));
   if(Object.keys(finalFields).some(k=>!answers[k])){toast('피해자부터 숨겨진 진실까지 6개 항목을 모두 입력하세요.',true);return;}
   const evaluation=evaluateFinalAnswers(answers);const solved=evaluation.solved;
-  try{if(state.mode==='server'){const data=await api.final({attemptId:state.attempt.id,answers});applyServerState(data);state.attempt.completedAt=state.attempt.completedAt||Date.now();}else{state.attempt.completedAt=Date.now();state.attempt.status='completed';}
-    state.attempt.solved=solved;state.attempt.phase='ENDING_STORY';notify();openEnding(0);
-  }catch(e){toast(e.message,true);}
+  state.attempt.completedAt=Date.now();state.attempt.status='completed';
+  state.attempt.solved=solved;state.attempt.phase='ENDING_STORY';notify();openEnding(0);
 }
 function openEnding(index){
   setPhase('ENDING_STORY');const ending=ENDING[index],evaluation=currentEvaluation(),solved=evaluation.solved;
@@ -318,20 +295,9 @@ function openHistoryImage(roundNo){
   openPopup({kicker:`사건 기록 · ROUND ${round.no}`,title:round.title,lead:'이미 공개된 사진입니다. 다시 봐도 시간이나 질문 수는 늘지 않습니다.',body:imageHtml(round,false),actions:[{label:'← 사건 기록으로 돌아가기',onClick:openHistory},{label:'현재 수사로 돌아가기 →',primary:true,onClick:openByPhase}],dismissible:true});
 }
 function openByPhase(){switch(state.attempt.phase){case'CASE_HOME':case'CASE_START':return openCaseStart();case'ROUND_INTRO':return openRoundIntro();case'IMAGE_REVEAL':return openImage();case'CLUE_SELECT':case'CLUE_RESULT':return openClueSelect();case'COMPANION_SELECT':case'COMPANION_RESULT':return openCompanionSelect();case'QUESTION_SELECT':case'QUESTION_PENDING':case'QUESTION_RESULT':return openQuestionSelect();case'ROUND_SUMMARY':return openRoundSummary();case'FINAL_ANSWER':return openFinalAnswer();case'ENDING_STORY':return openEnding(0);case'RESULT':return openResult();default:return openCaseStart();}}
-function applyServerState(data){
-  if(data.user)state.user=data.user;
-  if(data.attempt){Object.assign(state.attempt,data.attempt);if(state.attempt.startedAt&&typeof state.attempt.startedAt==='string'){const parsed=Date.parse(state.attempt.startedAt);if(!Number.isNaN(parsed))state.attempt.startedAt=parsed;}}
-  if(Array.isArray(data.clueIds))state.attempt.clueIds=data.clueIds;
-  if(data.hints)state.hints=data.hints;
-  if(data.timeRoomVisits)state.timeRoomVisits=data.timeRoomVisits;
-  if(Array.isArray(data.questions)){state.questions=data.questions.map(q=>({...q,answerText:answerText[q.category]||q.answerText||answerText.MAYBE}));state.attempt.totalQuestions=state.questions.length;state.attempt.questionCount=state.questions.filter(q=>q.roundNo===state.attempt.roundNo).length;}
-  notify();
-}
-
 async function boot(){
   $('#historyButton').onclick=openHistory;$('#rankingButton').onclick=openRanking;ensurePuter();
-  try{const status=await api.status();state.config=status.config||state.config;state.user=status.user||null;if(!state.config.ready)state.mode='demo';if(status.attempt)Object.assign(state.attempt,status.attempt);if(state.config.googleClientId){const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>state.config.googleClientId&&window.google.accounts.id.initialize({client_id:state.config.googleClientId,callback:window.handleGoogleCredential});document.head.append(s);}if(state.user&&state.attempt.status==='in_progress'){const serverState=await api.state();applyServerState(serverState);}}catch{state.mode='demo';}
-  const restored=state.mode==='demo'&&restoreLocalProgress();
+  const restored=restoreLocalProgress();
   await loadLeader();renderDashboard();
   if(restored){openByPhase();toast('저장된 수사 기록에서 이어서 시작합니다.');}
 }

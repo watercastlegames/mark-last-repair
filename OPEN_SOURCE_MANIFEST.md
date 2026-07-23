@@ -6,8 +6,6 @@
 - AI 동료와 집사 판정 프롬프트
 - 사건 데이터와 최종 정답 평가 규칙
 - Firebase 연결 예제와 Firestore 보안 규칙
-- 선택형 Classic ASP·SQL Server 기록 시스템
-- Google 토큰 검증 보조 서비스
 - 게임 기획서, 상세 설계서와 배포 안내
 - 게임에 실제 사용되는 라운드·결말 이미지
 - README용 플레이 GIF와 스크린샷

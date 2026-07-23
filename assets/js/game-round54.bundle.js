@@ -143,8 +143,7 @@ ${CASE_OVERVIEW_DETAILS}`;
   var baseAttempt = () => ({ id: null, status: "not_started", phase: "CASE_HOME", roundNo: 1, clueIds: [], questionCount: 0, totalQuestions: 0, penaltyMs: 0, startedAt: null, completedAt: null, solved: null });
   var emptyFinalDraft = () => ({ victim: "", killer: "", place: "", method: "", motive: "", truth: "" });
   var state = {
-    mode: new URLSearchParams(location.search).get("demo") === "1" ? "demo" : "server",
-    config: { googleClientId: "", ready: false },
+    mode: "demo",
     user: null,
     attempt: baseAttempt(),
     hints: {},
@@ -234,32 +233,6 @@ ${CASE_OVERVIEW_DETAILS}`;
     state.popup = null;
     notify();
   }
-
-  // assets/js/api.js
-  async function request(path, options = {}) {
-    const res = await fetch(path, { credentials: "same-origin", headers: { "Content-Type": "application/json", ...options.headers || {} }, ...options });
-    const json = await res.json().catch(() => null);
-    if (!res.ok || !json?.ok) {
-      const err = new Error(json?.error?.message || "\uAE30\uB85D \uBCF4\uAD00\uC2E4\uC758 \uD655\uC778\uC774 \uB2A6\uC5B4\uC9C0\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.");
-      err.code = json?.error?.code || `HTTP_${res.status}`;
-      throw err;
-    }
-    return json.data;
-  }
-  var api = {
-    status: () => request("api/auth_status.asp"),
-    authGoogle: (credential) => request("api/auth_google.asp", { method: "POST", body: JSON.stringify({ credential }) }),
-    start: () => request("api/attempt_start.asp", { method: "POST", body: JSON.stringify({ caseSlug: "mark-last-repair-v1" }) }),
-    state: () => request("api/attempt_state.asp?case=mark-last-repair-v1"),
-    clue: (payload) => request("api/clue_open.asp", { method: "POST", body: JSON.stringify(payload) }),
-    hint: (payload) => request("api/companion_hint.asp", { method: "POST", body: JSON.stringify(payload) }),
-    timeRoom: (payload) => request("api/time_room.asp", { method: "POST", body: JSON.stringify(payload) }),
-    reserve: (payload) => request("api/question_reserve.asp", { method: "POST", body: JSON.stringify(payload) }),
-    commit: (payload) => request("api/question_commit.asp", { method: "POST", body: JSON.stringify(payload) }),
-    advance: (payload) => request("api/round_advance.asp", { method: "POST", body: JSON.stringify(payload) }),
-    final: (payload) => request("api/final_submit.asp", { method: "POST", body: JSON.stringify(payload) }),
-    rankings: () => request("api/rankings.asp?case=mark-last-repair-v1&limit=100")
-  };
 
   // assets/js/popup.js
   var root = () => document.querySelector("#popupRoot");
@@ -1149,53 +1122,11 @@ ${caseFacts}
       openResult();
       return;
     }
-    if (state.mode === "demo") {
-      if (state.attempt.status === "not_started") {
-        resetDemo();
-        openCaseStart();
-      } else openByPhase();
-      return;
-    }
-    if (!state.user) {
-      openLogin();
-      return;
-    }
-    try {
-      const data = await api.start();
-      applyServerState(data);
-      openByPhase();
-    } catch (e) {
-      toast(e.message, true);
-    }
-  }
-  function openLogin() {
-    const configured = state.config.googleClientId;
-    openPopup({ kicker: "\uACF5\uC2DD \uAE30\uB85D \uB3C4\uC804", title: "Google \uB85C\uADF8\uC778 \uD6C4 \uC0AC\uAC74\uC744 \uC2DC\uC791\uD558\uC138\uC694", lead: "\uACF5\uC2DD \uAE30\uB85D\uACFC \uC0AC\uAC74\uB2F9 1\uD68C \uB3C4\uC804 \uC81C\uD55C\uC740 Google \uACC4\uC815\uC744 \uAE30\uC900\uC73C\uB85C \uC801\uC6A9\uB429\uB2C8\uB2E4.", body: configured ? '<div id="googlePopupButton"></div>' : '<div class="confirm-box">\uACF5\uC2DD \uAE30\uB85D \uC811\uC218\uB294 \uD604\uC7AC \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4. \uC9C0\uAE08\uC740 \uAC1C\uC778 \uAE30\uB85D\uC73C\uB85C \uC0AC\uAC74\uC744 \uC9C4\uD589\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.</div>', actions: [{ label: "\uAC1C\uC778 \uAE30\uB85D\uC73C\uB85C \uC0AC\uAC74 \uC2DC\uC791", onClick: () => {
-      closePopup();
-      state.mode = "demo";
+    if (state.attempt.status === "not_started") {
       resetDemo();
       openCaseStart();
-    } }], dismissible: true });
-    if (configured) renderGoogleButton("googlePopupButton");
+    } else openByPhase();
   }
-  function renderGoogleButton(id) {
-    if (!window.google?.accounts?.id) return;
-    window.google.accounts.id.renderButton(document.getElementById(id), { theme: "outline", size: "large", text: "signin_with", shape: "rectangular", locale: "ko", width: 320 });
-  }
-  window.handleGoogleCredential = async ({ credential }) => {
-    setPopupBusy(true, "Google \uACC4\uC815\uC744 \uD655\uC778\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026");
-    try {
-      const data = await api.authGoogle(credential);
-      state.user = data.user;
-      state.attempt = { ...state.attempt, ...data.attempt || {} };
-      notify();
-      closePopup();
-      await startOrResume();
-    } catch (e) {
-      setPopupBusy(false);
-      toast(e.message, true);
-    }
-  };
   function openCaseStart() {
     setPhase("CASE_START");
     const cast = COMPANIONS.map((c) => `<span class="cast-mini"><img src="${c.image}" alt="${c.name}"><b>${c.name}</b></span>`).join("");
@@ -1229,16 +1160,6 @@ ${caseFacts}
     const already = state.attempt.clueIds.includes(clueId);
     if (!already) {
       state.attempt.clueIds.push(clueId);
-      if (state.mode === "server") {
-        try {
-          const data = await api.clue({ attemptId: state.attempt.id, roundNo: round.no, clueId });
-          applyServerState(data);
-        } catch (e) {
-          state.attempt.clueIds = state.attempt.clueIds.filter((x) => x !== clueId);
-          toast(e.message, true);
-          return;
-        }
-      }
       notify();
     }
     setPhase("CLUE_RESULT");
@@ -1261,12 +1182,8 @@ ${caseFacts}
     const back = returnFromTimeRoom(origin);
     setPopupBusy(true, "\uC2DC\uAC04\uC758 \uBC29\uC5D0\uC11C \uCD94\uAC00 \uAE30\uB85D\uC744 \uCC3E\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026");
     try {
-      let hintNo = timeRoomCount(round.no) + 1;
-      if (state.mode === "server") {
-        const data = await api.timeRoom({ attemptId: state.attempt.id, roundNo: round.no });
-        hintNo = Number(data.hintNo) || hintNo;
-        state.attempt.penaltyMs = Number(data.totalPenaltyMs) || state.attempt.penaltyMs + 12e4;
-      } else state.attempt.penaltyMs += 12e4;
+      const hintNo = timeRoomCount(round.no) + 1;
+      state.attempt.penaltyMs += 12e4;
       state.timeRoomVisits[round.no] = hintNo;
       notify();
       flashPenalty("+2:00");
@@ -1302,12 +1219,6 @@ ${caseFacts}
       setPopupBusy(true, `${companion.name}, \uC758\uACAC\uC744 \uC815\uB9AC\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026 \uC7A0\uC2DC\uB9CC \uAE30\uB2E4\uB824 \uC8FC\uC138\uC694.`);
       try {
         hint = await companionHint(round.no, companionId, companionContext);
-        if (state.mode === "server") {
-          const data = await api.hint({ attemptId: state.attempt.id, roundNo: round.no, companionId, question: hint.question, comment: hint.comment });
-          const serverHint = data.hint || hint;
-          if (!isValidCompanionHint(serverHint, round.no, companionId, [], [], companionContext.allowedContext)) throw new Error("\uC800\uC7A5\uB41C \uB3D9\uB8CC \uC758\uACAC\uC774 \uACF5\uAC1C \uB2E8\uC11C \uADDC\uCE59\uC5D0 \uB9DE\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
-          hint = { ...serverHint, source: "puter" };
-        }
         state.hints[hintKey] = { ...hint, source: "puter", timeRoomFactCount: companionContext.currentFacts.length, questionFactCount: companionContext.questionFacts.length, companionId, name: companion.name };
       } catch (e) {
         setPopupBusy(false);
@@ -1353,30 +1264,14 @@ ${caseFacts}
     const round = currentRound();
     setPhase("QUESTION_PENDING");
     setPopupBusy(true, "\uC9D1\uC0AC\uAC00 \uD310\uB2E8\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4\u2026");
-    let questionId = `demo-${Date.now()}`;
     try {
       const category = await judgeQuestion(text, round.no);
       let answer = category;
-      if (state.mode === "server") {
-        const reserved = await api.reserve({ attemptId: state.attempt.id, roundNo: round.no, text });
-        questionId = reserved.questionId;
-        state.attempt.questionCount++;
-        state.attempt.totalQuestions++;
-        state.attempt.penaltyMs += 6e4;
-        notify();
-        flashPenalty();
-      } else {
-        state.attempt.questionCount++;
-        state.attempt.totalQuestions++;
-        state.attempt.penaltyMs += 6e4;
-        notify();
-        flashPenalty();
-      }
-      if (state.mode === "server") {
-        const committed = await api.commit({ questionId, answerCategory: category, source: "puter" });
-        answer = committed.answerCategory || category;
-        applyServerState(committed);
-      }
+      state.attempt.questionCount++;
+      state.attempt.totalQuestions++;
+      state.attempt.penaltyMs += 6e4;
+      notify();
+      flashPenalty();
       state.questions.push({ roundNo: round.no, text, category: answer, answerText: answerText[answer] || answerText.MAYBE });
       notify();
       openQuestionResult(text, answer);
@@ -1399,25 +1294,14 @@ ${caseFacts}
     openPopup({ kicker: `ROUND ${round.no} \xB7 \uC870\uC0AC \uC815\uB9AC`, title: `ROUND ${round.no} \uC870\uC0AC\uAC00 \uB05D\uB0AC\uC2B5\uB2C8\uB2E4`, lead: "\uC774\uBC88 \uB77C\uC6B4\uB4DC\uC5D0\uC11C \uC5BB\uC740 \uC815\uBCF4\uB97C \uC815\uB9AC\uD569\uB2C8\uB2E4.", body: `<div class="summary-grid"><div><span>\uD655\uC778 \uB2E8\uC11C</span><b>3\uAC1C</b></div><div><span>\uC2DC\uAC04\uC758 \uBC29</span><b>${timeRoomCount(round.no)}\uD68C</b></div><div><span>\uC0AC\uC6A9 \uC9C8\uBB38</span><b>${q}\uD68C</b></div><div><span>\uB204\uC801 \uC2DC\uAC04</span><b>${formatTime(elapsedMs())}</b></div></div>`, actions: [{ label: round.no < 4 ? "\uB2E4\uC74C \uADF8\uB9BC \uACF5\uAC1C \u2192" : "\uCD5C\uC885 \uBC1C\uC758\uB85C \uC774\uB3D9 \u2192", primary: true, onClick: advanceRound }, { label: "\uC0AC\uAC74 \uAE30\uB85D", onClick: openHistory }] });
   }
   async function advanceRound() {
-    try {
-      if (state.mode === "server") {
-        const data = await api.advance({ attemptId: state.attempt.id, roundNo: state.attempt.roundNo });
-        applyServerState(data);
-      } else {
-        if (state.attempt.roundNo < 4) {
-          state.attempt.roundNo++;
-          state.attempt.questionCount = 0;
-          state.attempt.phase = "ROUND_INTRO";
-          notify();
-        } else {
-          setPhase("FINAL_ANSWER");
-        }
-      }
-      if (state.attempt.roundNo > 4 || state.attempt.phase === "FINAL_ANSWER") openFinalAnswer();
-      else openRoundIntro();
-    } catch (e) {
-      toast(e.message, true);
-    }
+    if (state.attempt.roundNo < 4) {
+      state.attempt.roundNo++;
+      state.attempt.questionCount = 0;
+      state.attempt.phase = "ROUND_INTRO";
+      notify();
+    } else setPhase("FINAL_ANSWER");
+    if (state.attempt.phase === "FINAL_ANSWER") openFinalAnswer();
+    else openRoundIntro();
   }
   var finalFields = { victim: "ansVictim", killer: "ansKiller", place: "ansPlace", method: "ansMethod", motive: "ansMotive", truth: "ansTruth" };
   var finalFieldLabels = { victim: "\uD53C\uD574\uC790", killer: "\uAC00\uD574\uC790", place: "\uC7A5\uC18C", method: "\uC0AC\uB9DD \uC6D0\uC778", motive: "\uB3D9\uAE30", truth: "\uC228\uACA8\uC9C4 \uC9C4\uC2E4" };
@@ -1505,22 +1389,12 @@ ${caseFacts}
     }
     const evaluation = evaluateFinalAnswers(answers);
     const solved = evaluation.solved;
-    try {
-      if (state.mode === "server") {
-        const data = await api.final({ attemptId: state.attempt.id, answers });
-        applyServerState(data);
-        state.attempt.completedAt = state.attempt.completedAt || Date.now();
-      } else {
-        state.attempt.completedAt = Date.now();
-        state.attempt.status = "completed";
-      }
-      state.attempt.solved = solved;
-      state.attempt.phase = "ENDING_STORY";
-      notify();
-      openEnding(0);
-    } catch (e) {
-      toast(e.message, true);
-    }
+    state.attempt.completedAt = Date.now();
+    state.attempt.status = "completed";
+    state.attempt.solved = solved;
+    state.attempt.phase = "ENDING_STORY";
+    notify();
+    openEnding(0);
   }
   function openEnding(index) {
     setPhase("ENDING_STORY");
@@ -1652,50 +1526,11 @@ ${caseFacts}
         return openCaseStart();
     }
   }
-  function applyServerState(data) {
-    if (data.user) state.user = data.user;
-    if (data.attempt) {
-      Object.assign(state.attempt, data.attempt);
-      if (state.attempt.startedAt && typeof state.attempt.startedAt === "string") {
-        const parsed = Date.parse(state.attempt.startedAt);
-        if (!Number.isNaN(parsed)) state.attempt.startedAt = parsed;
-      }
-    }
-    if (Array.isArray(data.clueIds)) state.attempt.clueIds = data.clueIds;
-    if (data.hints) state.hints = data.hints;
-    if (data.timeRoomVisits) state.timeRoomVisits = data.timeRoomVisits;
-    if (Array.isArray(data.questions)) {
-      state.questions = data.questions.map((q) => ({ ...q, answerText: answerText[q.category] || q.answerText || answerText.MAYBE }));
-      state.attempt.totalQuestions = state.questions.length;
-      state.attempt.questionCount = state.questions.filter((q) => q.roundNo === state.attempt.roundNo).length;
-    }
-    notify();
-  }
   async function boot() {
     $("#historyButton").onclick = openHistory;
     $("#rankingButton").onclick = openRanking;
     ensurePuter();
-    try {
-      const status = await api.status();
-      state.config = status.config || state.config;
-      state.user = status.user || null;
-      if (!state.config.ready) state.mode = "demo";
-      if (status.attempt) Object.assign(state.attempt, status.attempt);
-      if (state.config.googleClientId) {
-        const s = document.createElement("script");
-        s.src = "https://accounts.google.com/gsi/client";
-        s.async = true;
-        s.onload = () => state.config.googleClientId && window.google.accounts.id.initialize({ client_id: state.config.googleClientId, callback: window.handleGoogleCredential });
-        document.head.append(s);
-      }
-      if (state.user && state.attempt.status === "in_progress") {
-        const serverState = await api.state();
-        applyServerState(serverState);
-      }
-    } catch {
-      state.mode = "demo";
-    }
-    const restored = state.mode === "demo" && restoreLocalProgress();
+    const restored = restoreLocalProgress();
     await loadLeader();
     renderDashboard();
     if (restored) {
