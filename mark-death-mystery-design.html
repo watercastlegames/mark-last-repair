@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마크의 마지막 수리 — 팀 미스터리 웹게임 기획서</title>
+  <style>
+    :root { --ink:#1c2028; --muted:#5c6573; --paper:#fffdf7; --red:#a52a2a; --line:#ddd7ca; --navy:#172337; --blue:#eaf3ff; --gold:#9b6b12; }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:#e9e5dc; font:16px/1.72 "Noto Sans KR","Malgun Gothic",sans-serif; }
+    main { max-width:1020px; margin:36px auto; padding:54px 64px; background:var(--paper); box-shadow:0 12px 38px #0002; }
+    h1,h2,h3 { line-height:1.3; } h1 { margin:0; font-size:36px; color:var(--navy); } h2 { margin-top:46px; padding-bottom:9px; border-bottom:2px solid var(--navy); font-size:24px; } h3 { margin:26px 0 8px; color:var(--red); font-size:19px; }
+    .eyebrow { margin:0 0 8px; color:var(--red); font-weight:800; letter-spacing:.06em; } .summary { color:var(--muted); font-size:19px; }
+    .notice { padding:16px 20px; border-left:5px solid var(--red); background:#fff2ed; } .flow { padding:18px; border-radius:8px; color:#fff; background:var(--navy); font-weight:700; text-align:center; }
+    table { width:100%; border-collapse:collapse; margin:14px 0 24px; } th,td { padding:12px; border:1px solid var(--line); vertical-align:top; text-align:left; } th { background:#f3f0e8; }
+    ul,ol { padding-left:24px; } .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; } .card { padding:16px; border:1px solid var(--line); border-radius:8px; background:#fff; } .card strong { display:block; color:var(--red); }
+    .butler { padding:20px; border:1px solid #b9d7f6; border-radius:8px; background:var(--blue); text-align:center; } .butler span { display:inline-block; margin:5px; padding:7px 11px; border:1px solid #86b8e8; border-radius:99px; background:#fff; font-weight:700; }
+    .warning { padding:14px 17px; border-left:4px solid var(--gold); background:#fff9e8; } code { padding:2px 5px; background:#eeeae1; border-radius:4px; } footer { margin-top:48px; color:var(--muted); font-size:13px; }
+    @media (max-width:700px) { main { margin:0; padding:32px 22px; } h1 { font-size:29px; } .cards { grid-template-columns:1fr; } } @media print { body { background:#fff; } main { margin:0; box-shadow:none; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">GAME DESIGN DOCUMENT · FINAL v1.0</p>
+    <h1>마크의 마지막 수리</h1>
+    <p class="summary">질문은 곧 개인 시간이다. 팀의 진실을 위해 누가 위험을 감수할 것인가를 겨루는 온라인 팀 미스터리 게임.</p>
+  </header>
+
+  <p class="notice"><strong>제작 원칙:</strong> 방송 미스터리 게임의 ‘정보 획득에는 개인 생존 비용이 따른다’는 구조만 참고한다. 실제 프로그램의 사진·영상·대사·사건·정답·출연자는 사용하지 않으며, 아래 사건과 캐릭터는 모두 독자 설정이다.</p>
+
+  <h2>1. 게임 개요</h2>
+  <table>
+    <tr><th>항목</th><th>정의</th></tr>
+    <tr><td>장르</td><td>온라인 팀 추리 + 개인 시간 자원관리</td></tr>
+    <tr><td>플랫폼</td><td>모바일 우선 반응형 웹, 5팀 대전 기준</td></tr>
+    <tr><td>구성</td><td>한 매치 2라운드 / 라운드별 독립 사건 / 개인 시간은 매치 전체에 누적</td></tr>
+    <tr><td>핵심 딜레마</td><td>질문과 힌트는 팀의 정답 확률을 높이지만, 행동한 개인의 생존 위험을 높인다.</td></tr>
+    <tr><td>AI 역할</td><td>자유 해설자가 아닌 규칙 기반 <strong>집사</strong>. 정해진 네 가지 문장만 답한다.</td></tr>
+  </table>
+
+  <h2>1-1. 팬페이지 동료 팀</h2>
+  <p>임시 팬페이지 프로토타입에서는 <strong>최예선·콩진호·남출구·이성민</strong>이라는 완전한 가상 인물을 플레이어의 동료 팀원으로 배치한다. 최예선 1명과 콩진호·남출구·이성민 3명의 구성이다. 네 사람은 실제 출연자가 아니며, 독자적인 얼굴과 설정을 가진 <strong>가상 조력자 캐릭터</strong>로만 사용한다.</p>
+  <p class="warning"><strong>팬페이지 표기:</strong> 모든 화면에 “비공식 팬메이드 게임 · 방송/제작사와 무관”을 표시한다. 실제 사진·음성·방송 클립·실제 대사를 사용하지 않고, 인물 초상은 이름 이니셜 또는 독자 제작 실루엣으로 대체한다.</p>
+  <table>
+    <tr><th>동료</th><th>게임 내 역할</th><th>힌트 성향</th><th>대사 예시 (창작문)</th></tr>
+    <tr><td>최예선</td><td>정보 정리자</td><td>확정 사실과 추측을 분리하고, 팀 토론을 요약한다.</td><td>“지금 확실한 사실과 우리가 추측하는 부분을 나눠 보자.”</td></tr>
+    <tr><td>콩진호</td><td>가설 분해자</td><td>큰 가설을 예·아니요로 검증 가능한 작은 질문으로 나눈다.</td><td>“사망 원인을 바로 단정하지 말고, 먼저 질식사인지부터 배제해 보자.”</td></tr>
+    <tr><td>남출구</td><td>현장 관찰자</td><td>그림 속 물건·배치·시간적 모순을 다시 보게 한다.</td><td>“현장에 물이 있다는 사실만으로 사고라고 결론 내리긴 이르지 않아?”</td></tr>
+    <tr><td>이성민</td><td>비용 전략가</td><td>질문 3회의 비용과 시간의 방 입장자를 조율한다.</td><td>“이건 한 번 물으면 확실히 갈리는 질문이야. 시간 1분을 쓸 가치가 있어.”</td></tr>
+  </table>
+  <p>동료 대사는 집사의 답변이 아니라 <strong>팀 토론용 제안</strong>이다. 정답을 알려 주지 않으며, 질문을 대신 제출하지도 않는다.</p>
+
+  <h2>2. 전체 매치 흐름</h2>
+  <p class="flow">사건 공개 → 투표실 질문(시간 비용) → 시간의 방(시간 2배) → 팀 토론 → 정답 발의 → 팀 순위 → 개인 시간에 따른 생존 판정</p>
+  <p>1라운드에는 5팀 모두 참가한다. 첫 정답 팀은 최종 1위로 확정되어 2라운드를 면제받는다. 남은 4팀은 새로운 사건으로 2라운드를 진행하고, 다음 정답 팀이 최종 2위가 된다. <strong>1라운드에서 쌓인 개인 시간은 2라운드에도 그대로 이어진다.</strong></p>
+
+  <h2>3. 단계별 게임 규칙</h2>
+  <h3>1단계 — 사건 공개</h3>
+  <p>각 팀은 사건의 개요, 일부 그림, 그리고 최종 정답에 필요한 <strong>핵심 키워드 개수</strong>만 받는다. 범인이나 사건의 인과는 공개하지 않는다.</p>
+  <div class="cards">
+    <div class="card"><strong>공개 정보</strong>사건 개요 · 현장 그림 1장 · 핵심 키워드 수</div>
+    <div class="card"><strong>비공개 정보</strong>등장인물의 관계 · 동기 · 방법 · 시간 순서</div>
+    <div class="card"><strong>팀의 목표</strong>키워드를 포함한 사건 전말을 완성해 가장 먼저 발의</div>
+  </div>
+
+  <h3>2단계 — 투표실에서 질문하기</h3>
+  <p>사건실에서 동료들과 토론한 뒤, 플레이어는 투표실에 혼자 입장해 집사에게 질문한다. 한 번 입장하면 최대 3개의 질문을 할 수 있으며, <strong>질문 하나마다 해당 플레이어의 개인 시간이 1분 증가</strong>한다. 질문을 많이 할수록 정보는 늘지만, 게임 종료 뒤 자신의 생존 위험도 커진다.</p>
+  <table>
+    <tr><th>행동</th><th>제한</th><th>개인 시간</th></tr>
+    <tr><td>투표실 입장</td><td>팀원과 분리, 한 번 입장하면 질문 최대 3개</td><td>입장 자체는 증가 없음</td></tr>
+    <tr><td>질문 1개</td><td>자유 문장. 사건과 관계된 사실 여부를 물어야 함</td><td><strong>+1분</strong></td></tr>
+    <tr><td>정답 발의</td><td>팀 대표만 가능</td><td>정답: 증가 없음 / 오답: 발의자 <strong>+5분</strong></td></tr>
+  </table>
+
+  <h3>3단계 — 집사 AI의 답변</h3>
+  <div class="butler">
+    <strong>집사는 아래 네 문장 중 하나만 출력한다. 이유·힌트·보충 설명·대화는 절대 제공하지 않는다.</strong><br>
+    <span>네, 그렇습니다.</span><span>아니요, 그렇지 않습니다.</span><span>그럴 수도 있습니다.</span><span>중요하지 않습니다.</span>
+  </div>
+  <table>
+    <tr><th>판정</th><th>의미</th><th>예시 질문</th></tr>
+    <tr><td>네, 그렇습니다.</td><td>질문의 모든 전제가 사건 데이터와 일치</td><td>“마크는 사망 당시 배전실 안에 있었습니까?”</td></tr>
+    <tr><td>아니요, 그렇지 않습니다.</td><td>질문의 모든 전제가 사건 데이터와 불일치</td><td>“마크의 사망은 단순 낙상사입니까?”</td></tr>
+    <tr><td>그럴 수도 있습니다.</td><td>일부만 맞거나, 가능성은 있으나 사건의 확정 사실이 아님</td><td>“범인은 돈 때문에 마크를 죽였습니까?”</td></tr>
+    <tr><td>중요하지 않습니다.</td><td>정답의 핵심 키워드·인과와 관계없음</td><td>“사건 당일 극장에 관객이 많았습니까?”</td></tr>
+  </table>
+  <p class="warning"><strong>구현 규칙:</strong> AI는 사건별 사실·거짓·부분일치·무관 항목을 담은 판정 데이터베이스를 기준으로 답한다. 답변 텍스트는 고정 문자열로 처리해, AI가 정답을 누설하거나 설명을 덧붙일 여지를 없앤다.</p>
+
+  <h3>4단계 — 시간의 방</h3>
+  <p>게임 시작 30분 후 시간의 방이 열린다. 방에는 그림, 추가 단서 등 핵심 힌트가 있다. 단, 한 번에 한 명만 입장할 수 있고 메모는 금지되며, <strong>입장한 플레이어의 시간은 방 안에서 2배 속도로 증가</strong>한다. 팀은 누가 위험을 감수해 힌트를 보고 기억해 전달할지 정해야 한다.</p>
+  <table>
+    <tr><th>보상</th><th>제약</th><th>전략적 의미</th></tr>
+    <tr><td>현장 그림 추가 공개, 물건의 위치·시간·관계 단서</td><td>30분 뒤 개방 / 1명만 입장 / 메모 금지 / 체류 중 시간 2배</td><td>정보 담당자가 개인 시간을 희생해 팀의 추리 확률을 올림</td></tr>
+  </table>
+
+  <h3>5단계 — 정답 발의</h3>
+  <p>팀이 사건을 모두 이해했다고 판단하면 대표 한 명이 전말을 서술해 발의한다. 단순히 범인만 맞혀서는 통과할 수 없다. 사건별로 미리 지정된 핵심 키워드를 모두 충족해야 한다.</p>
+  <table>
+    <tr><th>정답에 포함할 항목</th><th>예시</th></tr>
+    <tr><td>인물</td><td>피해자와 가해자는 누구인가</td></tr>
+    <tr><td>장소·시간</td><td>어디서, 어떤 순서로 사건이 벌어졌는가</td></tr>
+    <tr><td>동기</td><td>왜 가해자가 행동했는가</td></tr>
+    <tr><td>방법·사망 원인</td><td>어떤 장치나 행동으로 사망에 이르게 했는가</td></tr>
+    <tr><td>숨겨진 진실</td><td>사건을 연결하는 과거의 비밀 또는 결정적 관계</td></tr>
+  </table>
+
+  <h2>4. 순위와 생존 규칙</h2>
+  <table>
+    <tr><th>최종 팀 순위</th><th>생존 결과</th><th>개인 시간의 영향</th></tr>
+    <tr><td>1위</td><td>전원 안전, 2라운드 면제</td><td>개인 시간은 기록되지만 이번 매치 생존에는 영향 없음</td></tr>
+    <tr><td>2위</td><td>전원 안전</td><td>누적 시간의 위험에서 벗어남</td></tr>
+    <tr><td>3·4위</td><td>탈락 후보 1명 발생</td><td>각 팀에서 <strong>개인 시간이 가장 적은 사람</strong>이 후보가 됨</td></tr>
+    <tr><td>5위</td><td>데스매치 직행 1명</td><td>팀 내 <strong>개인 시간이 가장 많은 사람</strong>이 직행</td></tr>
+  </table>
+  <p>이 규칙은 ‘질문을 많이 해 팀에 기여한 사람’이 최하위일 경우 가장 위험해지고, ‘질문을 거의 하지 않은 사람’은 중간 하위팀일 경우 후보가 되는 역설을 만든다. 팀 승리와 개인 생존이 완전히 일치하지 않는 것이 핵심 긴장이다.</p>
+
+  <h2>5. 예시 사건 설계 — 마크의 마지막 수리</h2>
+  <p>아래는 MVP의 1라운드 사건이다. 과거 절도와 현재 사망을 하나의 인과로 묶되, 모든 정답 정보는 집사 답변과 시간의 방 단서만으로 논리적으로 도달할 수 있게 설계한다.</p>
+  <table>
+    <tr><th>사건 공개</th><td>폭풍우가 치던 밤, 폐극장 배전실에서 전기 수리공 <strong>마크 리</strong>가 숨진 채 발견됐다. 바닥은 젖어 있고 차단기는 내려가 있다. 그림에는 배전반, 작업가방, 바닥의 물웅덩이만 보인다. <strong>핵심 키워드: 5개</strong></td></tr>
+    <tr><th>키워드(운영 데이터)</th><td>마크 / 그랜트 / 배전실 / 감전 유도 / 12년 전 금화 절도</td></tr>
+    <tr><th>숨긴 전말</th><td>과거 극장 경비원이었던 그랜트는 12년 전 금화 절도의 공범이었다. 마크가 발견한 금화 상자 속 기록이 자신을 드러낼 것을 두려워해, 소금물을 이용해 배전실의 감전 사고를 위장했다.</td></tr>
+    <tr><th>시간의 방 단서</th><td>분장실 선반의 소금물 스프레이 사진, 열쇠 복제 비용이 지워진 회계장부 일부, 마크의 음성메시지 일부 그림</td></tr>
+  </table>
+  <h3>유효 질문의 예</h3>
+  <table>
+    <tr><th>질문</th><th>집사 답변</th><th>플레이어가 얻는 방향</th></tr>
+    <tr><td>“마크의 사망은 누군가의 의도가 개입된 사건입니까?”</td><td>네, 그렇습니다.</td><td>사고가 아닌 타살 가능성 탐색</td></tr>
+    <tr><td>“바닥의 물은 빗물입니까?”</td><td>아니요, 그렇지 않습니다.</td><td>인위적인 감전 유도 가능성 탐색</td></tr>
+    <tr><td>“금화 절도는 이번 사망 사건과 관련 있습니까?”</td><td>네, 그렇습니다.</td><td>과거 사건과 현재 동기 연결</td></tr>
+    <tr><td>“그랜트는 금화를 훔쳤습니까?”</td><td>그럴 수도 있습니다.</td><td>공범 여부·행동의 범위를 더 나눠 물어야 함</td></tr>
+    <tr><td>“극장 포스터의 배우 이름이 중요합니까?”</td><td>중요하지 않습니다.</td><td>무관한 탐색을 차단</td></tr>
+  </table>
+
+  <h2>6. 화면 및 사용자 경험</h2>
+  <ul>
+    <li><strong>사건실:</strong> 사건 개요, 현장 그림, 남은 핵심 키워드 수, 팀 공용 토론창과 동료 4명의 힌트 패널을 표시한다.</li>
+    <li><strong>동료 힌트 패널:</strong> 라운드당 팀원별 1회씩, 총 4회의 창작 힌트를 제공한다. <code>질문 설계</code>·<code>그림 재관찰</code>·<code>가설 정리</code>·<code>시간 비용</code> 중 하나를 조언하며, 범인·정답 키워드를 직접 공개하지 않는다.</li>
+    <li><strong>투표실:</strong> 개인 전용 화면. 질문 입력창과 남은 질문 3칸만 보이며, 집사는 고정 문구 하나만 반환한다.</li>
+    <li><strong>개인 시간 HUD:</strong> 항상 노출한다. 질문 뒤 <code>+1:00</code>, 시간의 방에서는 <code>×2</code>를 강하게 표시한다.</li>
+    <li><strong>시간의 방:</strong> 한 명의 입장 현황을 팀에 표시하고, 방 안에서는 추가 단서 이미지만 제공한다. 캡처 방지는 기술적으로 완전하지 않으므로 게임 규칙과 신고 기능으로 보완한다.</li>
+    <li><strong>정답 발의:</strong> 대표가 전말을 입력하고, 시스템이 필수 키워드 포함 여부와 사건 인과를 판정한다. 오답은 발의자 시간에 즉시 +5분을 더한다.</li>
+  </ul>
+
+  <h2>7. MVP 구현 범위</h2>
+  <ul>
+    <li>5팀 × 팀당 3~4명, 텍스트 채팅 기반 팀 토론, 2라운드 매치 구조</li>
+    <li>최예선·콩진호·남출구·이성민의 가상 동료 힌트 패널 4종. 모든 얼굴과 대사는 독자 제작하고, 실제 초상·음성·대사는 사용하지 않음</li>
+    <li>독자 사건 2개(마크 사건 / 후속 프랜시스 사건), 라운드당 현장 그림 1장과 시간의 방 단서 2~3개</li>
+    <li>집사용 사건 판정 데이터(JSON): 질문 분류, 네 가지 고정 응답, 정답 키워드, 무관 주제</li>
+    <li>개인 시간 누적, 질문·오답·시간의 방 비용, 팀 순위와 생존 후보 계산</li>
+    <li>AI가 자유롭게 설명하거나 AI 라이벌과 경쟁하는 기능은 MVP에서 제외한다.</li>
+  </ul>
+
+  <h2>8. 검증 기준</h2>
+  <ol>
+    <li>어떤 유효 정답도 시간의 방 없이 질문만으로 도달 가능해야 한다. 시간의 방은 ‘정답 보장’이 아니라 확률 향상 수단이다.</li>
+    <li>각 핵심 키워드는 최소 두 개 이상의 질문 경로로 좁힐 수 있어야 한다.</li>
+    <li>집사 답변은 같은 질문·같은 사건 상태에서 항상 동일해야 한다.</li>
+    <li>질문을 세 번 모두 쓴 사람이 팀에 확실히 기여할 수 있어야 개인 시간 페널티가 납득된다.</li>
+    <li>적은 시간만 쓴 플레이어도 팀 토론·가설 정리·정답 발의로 기여할 여지를 둔다.</li>
+  </ol>
+
+  <footer>문서 목적: ‘추리 + 자원 관리 + 팀 전략’의 딜레마를 웹 멀티플레이어 프로토타입으로 옮기기 위한 최종 기획안</footer>
+</main>
+</body>
+</html>

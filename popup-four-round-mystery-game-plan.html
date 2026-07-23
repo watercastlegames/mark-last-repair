@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마크의 마지막 수리 · 4라운드 중앙 팝업형 게임 기획서</title>
+  <style>
+    :root{--bg:#eef3f8;--paper:#fff;--ink:#152235;--muted:#5f7188;--line:#d8e2ed;--navy:#08182b;--navy2:#142e4b;--gold:#c7922d;--blue:#2473ad;--green:#287655;--red:#a74045;--violet:#6849a1}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Noto Sans KR","Malgun Gothic",sans-serif}.page{width:min(1180px,100%);margin:auto;padding:34px 20px 72px}.cover{padding:38px;border-radius:20px;background:radial-gradient(circle at 88% 0,#355a7e 0,#102a47 35%,#08182b 78%);color:#fff;box-shadow:0 18px 45px #10233a38}.cover small{color:#f0c76e;font-weight:900;letter-spacing:.14em}.cover h1{margin:7px 0 8px;font-size:34px;letter-spacing:-.06em}.cover p{max-width:850px;margin:0;color:#d4e1ed;font-size:16px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:21px}.chips span{padding:5px 10px;border:1px solid #ffffff42;border-radius:99px;color:#e9f1f8;font-size:12px}.summary{margin:22px 0;padding:18px 20px;border-left:5px solid var(--gold);border-radius:10px;background:#fff9e9;color:#664d19}.summary b{display:block;margin-bottom:4px;color:#45320e;font-size:17px}h2{margin:44px 0 12px;font-size:24px;letter-spacing:-.04em}h3{margin:0 0 7px;font-size:17px}.lead{margin:-5px 0 16px;color:var(--muted)}.card{margin:13px 0;padding:19px 20px;border:1px solid var(--line);border-radius:13px;background:var(--paper);box-shadow:0 4px 15px #22384f0d}.card p{margin:6px 0}.callout{padding:14px 16px;border-radius:9px;background:#e9f3fb;color:#214f72}.warn{padding:14px 16px;border-radius:9px;background:#fff0f0;color:#7c3035}.good{padding:14px 16px;border-radius:9px;background:#eaf6ef;color:#235e45}table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}th,td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#eaf1f7;color:#2d4055;font-size:13px}tr:last-child td{border-bottom:0}code{padding:2px 5px;border-radius:4px;background:#e9eff5;color:#26445f;font-size:12px}.flow{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;margin:18px 0}.flow div{position:relative;display:grid;place-items:center;min-height:72px;padding:8px;border-radius:9px;background:#dfeaf4;text-align:center;font-size:12px;font-weight:900}.flow div.em{background:#173b5c;color:#fff}.flow div.final{background:#6a4d8d;color:#fff}.flow div:not(:last-child):after{content:"→";position:absolute;z-index:2;right:-8px;color:#547997;font-size:18px}.round-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.round{padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff}.round strong{display:block;color:var(--blue);font-size:18px}.round small{display:block;color:var(--gold);font-weight:900}.round ul{margin:8px 0 0;padding-left:18px;font-size:13px}.popup-demo{position:relative;min-height:460px;margin:16px 0;padding:16px;border-radius:16px;background:linear-gradient(145deg,#142e4b,#071423);box-shadow:inset 0 0 60px #0005}.hud{display:flex;justify-content:space-between;padding:9px 12px;border:1px solid #577390;border-radius:8px;background:#0b1e32;color:#fff;font-size:12px}.backdrop{display:grid;place-items:center;position:absolute;inset:55px 0 0;background:#0008}.popup{width:min(580px,calc(100% - 24px));padding:21px;border:1px solid #6689aa;border-radius:16px;background:#10233a;color:#fff;box-shadow:0 22px 70px #000}.popup-label{color:#efc56d;font-size:11px;font-weight:900;letter-spacing:.12em}.popup h3{margin:5px 0;font-size:22px}.popup p{color:#cbd9e6}.popup-result{margin:12px 0;padding:15px;border-left:4px solid #efc56d;border-radius:8px;background:#071523;color:#e9f3fb}.popup-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.popup-actions span{padding:11px;border-radius:8px;background:#d6a84f;color:#071423;text-align:center;font-weight:900}.popup-actions span:last-child{background:#284866;color:#fff}.state{display:inline-block;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:900;white-space:nowrap}.state.required{background:#ffe5e5;color:#94363b}.state.server{background:#e6f1fb;color:#226799}.state.client{background:#e8f5ed;color:#286747}.state.ai{background:#efe8fb;color:#614391}.rank{display:grid;grid-template-columns:56px 1fr 100px 100px;gap:8px;align-items:center;margin:7px 0;padding:10px;border-radius:9px;background:#edf3f8}.rank b{color:var(--blue)}.check{padding-left:0;list-style:none}.check li{position:relative;margin:8px 0;padding-left:26px}.check li:before{content:"□";position:absolute;left:0;color:var(--blue);font-size:19px;line-height:1}.api{display:grid;grid-template-columns:170px 1fr;gap:8px;margin:6px 0;padding:10px;border-radius:8px;background:#f3f7fa}.api b{color:var(--blue)}.sequence{counter-reset:seq}.sequence li{counter-increment:seq;position:relative;margin:10px 0;padding:12px 12px 12px 48px;border:1px solid var(--line);border-radius:9px;background:#fff;list-style:none}.sequence li:before{content:counter(seq);position:absolute;left:13px;top:12px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--navy2);color:#fff;font-weight:900}.source a{color:#1c659d}@media(max-width:900px){.flow{grid-template-columns:repeat(3,1fr)}.flow div:not(:last-child):after{display:none}.round-grid{grid-template-columns:1fr 1fr}}@media(max-width:650px){.page{padding:16px 11px 50px}.cover{padding:25px 18px}.cover h1{font-size:26px}h2{margin-top:33px;font-size:21px}.flow,.round-grid{grid-template-columns:1fr}.popup-demo{min-height:520px;margin-right:-4px;margin-left:-4px;padding:8px}.popup{padding:17px 14px}.popup-actions{grid-template-columns:1fr}.hud{font-size:10px}table{display:block;overflow-x:auto}th,td{min-width:130px;padding:10px;font-size:13px}.rank{grid-template-columns:44px 1fr 72px 72px;font-size:12px}.api{grid-template-columns:1fr;gap:2px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="cover">
+      <small>NEW MASTER PLAN · CASE 01</small>
+      <h1>마크의 마지막 수리 — 4라운드 중앙 팝업형 추리 게임</h1>
+      <p>메인화면은 진행 현황만 보여주고, 그림 공개·단서 선택·동료 의견·질문·판정·라운드 전환·최종 해설은 모두 화면 중앙의 몰입형 팝업에서 진행한다.</p>
+      <div class="chips"><span>중앙 팝업 진행</span><span>4라운드 × 질문 최대 3회</span><span>동료 4명</span><span>Google 로그인</span><span>사건당 계정 1회</span><span>서버 랭킹</span></div>
+    </header>
+
+    <section class="summary"><b>사용자 의도 최종 정의</b>“메인화면에서 여러 패널을 직접 돌아다니는 게임”이 아니다. 사용자가 현재 해야 할 행동 하나를 누르면 중앙 팝업이 열리고, 그 팝업 안에서 선택과 결과를 확인한다. 단계가 끝날 때마다 다음 단계 안내 팝업이 자동으로 뜬다. 이 순환을 네 번 진행한 후 최종 답안과 전체 사건 내막·성적·랭킹을 보여준다.</section>
+
+    <h2>1. 게임 전체 구조</h2>
+    <div class="flow"><div class="em">Google 로그인</div><div>사건 시작</div><div>그림 공개</div><div>단서 3개</div><div>동료 의견</div><div>질문 최대 3개</div><div>라운드 결과</div><div class="em">× 4라운드</div><div class="final">최종 발의·해설·랭킹</div></div>
+    <div class="card"><h3>플레이 단위</h3><p><b>1라운드</b>는 그림 1장, 공개 단서 3개, 동료 의견, 집사 질문 최대 3개로 구성한다. 세 번째 질문 답변이 끝나면 자동으로 라운드 정리 팝업을 띄우고, “다음 그림 공개”를 눌러 다음 라운드로 이동한다.</p><p>플레이어는 질문을 최소 1개 한 뒤 “남은 질문 포기하고 다음 라운드”를 선택할 수 있다. 이 경우 사용 질문 수가 줄어 랭킹에 유리할 수 있지만, 포기한 질문은 되돌릴 수 없다. 따라서 전체 질문 수는 4~12회로 기록된다.</p></div>
+    <div class="callout"><b>자동 전환 규칙:</b> 질문 3회 완료 → 라운드 결과 팝업 자동 표시 → 다음 라운드 예고 → 다음 그림 팝업. 사용자가 메인화면에서 다음 버튼을 찾아다니지 않는다.</div>
+
+    <h2>2. 메인화면과 팝업의 역할 분리</h2>
+    <table>
+      <thead><tr><th>영역</th><th>보여주는 정보</th><th>가능한 행동</th><th>하지 않는 일</th></tr></thead>
+      <tbody>
+        <tr><td>메인화면</td><td>사건명, 1~4 라운드 진행도, 개인 시간, 사용 질문 수, 로그인 사용자, 사건 기록</td><td>현재 단계 계속하기, 사건 기록 열기, 랭킹 보기</td><td>단서·동료·질문 결과를 여러 패널에 동시에 펼치지 않음</td></tr>
+        <tr><td>중앙 진행 팝업</td><td>현재 그림 또는 현재 선택지 또는 방금 얻은 결과 하나</td><td>단서 선택, 동료 선택, 질문 선택/입력, 다음 단계</td><td>다른 라운드의 선택지를 섞지 않음</td></tr>
+        <tr><td>사건 기록 팝업</td><td>지금까지 공개된 그림·단서·동료 의견·집사 판정</td><td>탭으로 재열람, 현재 팝업으로 복귀</td><td>미공개 정보·정답·AI 내부 판단 근거 노출 금지</td></tr>
+        <tr><td>최종 결과 팝업</td><td>정답 여부, 전체 내막, 4장 그림, 시간, 질문 수, 순위</td><td>결과 공유, 랭킹 보기, 다음 사건으로</td><td>같은 사건 다시 시작하기 버튼 제공 금지</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. 중앙 팝업 시각 구조</h2>
+    <p class="lead">각 팝업은 같은 위치와 버튼 규칙을 사용한다. 팝업 밖 메인화면은 어둡게 처리하고 조작할 수 없다.</p>
+    <div class="popup-demo">
+      <div class="hud"><span>ROUND 2 / 4 · 질문 1 / 3</span><span>개인 시간 06:42 · 전체 질문 4회</span></div>
+      <div class="backdrop"><section class="popup"><span class="popup-label">ROUND 2 · 동료 의견</span><h3>누구의 의견을 들을까요?</h3><p>이번 라운드에서 공개된 정보만 근거로 의견을 제시합니다.</p><div class="popup-result"><b>콩진호</b><br>“확실하진 않지만, 작업가방이 급히 놓인 이유부터 물어보는 건 어떨까요?”</div><div class="popup-actions"><span>이 질문 사용하기</span><span>다른 동료 선택</span></div></section></div>
+    </div>
+    <table>
+      <thead><tr><th>팝업 규격</th><th>데스크톱</th><th>모바일</th></tr></thead>
+      <tbody>
+        <tr><td>폭 / 높이</td><td>최대 680px / 최대 88vh</td><td>좌우 12px / 최대 92dvh</td></tr>
+        <tr><td>버튼</td><td>주 행동 1개 + 보조 행동 최대 2개</td><td>한 열, 높이 최소 56px, 화면 하단 안전영역 반영</td></tr>
+        <tr><td>전환</td><td>이전 팝업 축소 → 다음 팝업 등장 300ms</td><td>과한 확대 없이 페이드·슬라이드 240ms</td></tr>
+        <tr><td>스크롤</td><td>팝업 내부만 스크롤</td><td>배경 스크롤 잠금, 닫거나 전환해도 메인 위치 유지</td></tr>
+        <tr><td>결과</td><td colspan="2">선택 버튼이 있던 자리를 결과 카드로 교체한다. 문서 최상단이나 다른 패널로 이동하지 않는다.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. 한 라운드의 정확한 팝업 순서</h2>
+    <ol class="sequence">
+      <li><b>라운드 시작 팝업</b> — “새로운 그림이 공개됩니다”와 현재 라운드 목표를 표시한다.</li>
+      <li><b>그림 공개 팝업</b> — 화면 중앙에 그림을 크게 표시한다. 모바일에서는 원본 비율을 유지하고 확대·가로 이동을 지원한다.</li>
+      <li><b>단서 선택 팝업</b> — 그림 속 물음표 또는 하단 단서 카드 3개 중 하나를 누른다.</li>
+      <li><b>단서 결과 팝업</b> — 선택한 단서 설명 한 문장만 표시하고 “다음 단서”를 누른다. 3개 완료 시 자동으로 동료 단계로 간다.</li>
+      <li><b>동료 선택 팝업</b> — 네 명 중 한 명을 선택한다. 동일 라운드에서 모두 들을 수 있고 재열람은 무료다.</li>
+      <li><b>동료 말풍선 팝업</b> — 동료가 이번 라운드 공개 정보만 근거로 질문 하나를 추천한다. “이 질문 사용” 버튼을 제공한다.</li>
+      <li><b>질문 선택 팝업</b> — 동료 추천 질문 또는 직접 입력을 고른다. 질문 확정 전 시간 비용은 없다.</li>
+      <li><b>질문 확인 팝업</b> — 질문 문장과 비용 +1:00을 보여주고 최종 확인을 받는다.</li>
+      <li><b>집사 판정 팝업</b> — 네 가지 허용 문장 중 하나만 크게 표시한다. 최대 3회까지 6~9를 반복한다.</li>
+      <li><b>라운드 완료 팝업</b> — 획득 단서, 사용 질문 수, 누적 시간을 요약하고 “다음 그림 공개”를 표시한다.</li>
+    </ol>
+
+    <h2>5. 4라운드 사건 콘텐츠</h2>
+    <div class="round-grid">
+      <article class="round"><small>ROUND 1</small><strong>배전실 발견 현장</strong><ul><li>젖은 바닥</li><li>내려간 차단기</li><li>급히 놓인 작업가방</li><li>질문 최대 3개</li></ul></article>
+      <article class="round"><small>ROUND 2</small><strong>마크의 작업 흔적</strong><ul><li>손상된 장갑</li><li>수리 일정표</li><li>주머니 속 낡은 열쇠</li><li>질문 최대 3개</li></ul></article>
+      <article class="round"><small>ROUND 3</small><strong>폐극장 분장실</strong><ul><li>무색 스프레이 병</li><li>소금기 있는 잔류물</li><li>찢긴 오래된 티켓</li><li>질문 최대 3개</li></ul></article>
+      <article class="round"><small>ROUND 4</small><strong>과거 기록 보관실</strong><ul><li>12년 전 신문</li><li>금화 목록 일부</li><li>마크와 그랜트의 연결</li><li>질문 최대 3개</li></ul></article>
+    </div>
+    <div class="warn"><b>정보 공개 제한:</b> 1라운드 동료가 3·4라운드의 인물, 금화 절도, 소금물 같은 내용을 먼저 말하면 안 된다. AI 프롬프트에는 현재 라운드까지 공개된 정보만 전달하며, 응답 후 금지 키워드 검사로 한 번 더 차단한다.</div>
+
+    <h2>6. 동료 의견 시스템</h2>
+    <table>
+      <thead><tr><th>동료</th><th>게임용 페르소나</th><th>질문 제안 방식</th><th>금지</th></tr></thead>
+      <tbody>
+        <tr><td>최예선</td><td>차분하게 단서를 연결함</td><td>눈앞의 단서 하나를 정리하는 질문</td><td>미공개 인물·과거 사건 단정</td></tr>
+        <tr><td>콩진호</td><td>신중하고 가능성을 열어 둠</td><td>사망 원인·가설을 좁히는 질문</td><td>확정되지 않은 내용을 사실처럼 말함</td></tr>
+        <tr><td>남출구</td><td>거침없고 직설적임</td><td>가장 이상한 현장 요소를 바로 묻는 질문</td><td>정답 또는 범인 직접 노출</td></tr>
+        <tr><td>이성민</td><td>경험 많은 시간 전략가</td><td>질문 비용 대비 효율이 높은 순서를 제안</td><td>실제 인물의 고유 말투·발언 모사</td></tr>
+      </tbody>
+    </table>
+    <div class="good"><b>동료 의견 보존:</b> 라운드별 의견과 추천 질문을 서버 플레이 세션에 저장한다. 다시 눌러도 AI를 재호출하지 않고 저장된 동일 문장을 보여준다.</div>
+
+    <h2>7. 질문·집사 판정 규칙</h2>
+    <table>
+      <thead><tr><th>항목</th><th>규칙</th></tr></thead>
+      <tbody>
+        <tr><td>질문 수</td><td>라운드별 최대 3개, 전체 최대 12개. 최소 1개 이후 남은 질문 포기 가능.</td></tr>
+        <tr><td>질문 비용</td><td>추천 버튼 선택은 무료. “질문 확정” 시에만 개인 시간 +1:00.</td></tr>
+        <tr><td>질문 형태</td><td>한 번에 하나의 사실을 묻는 예/아니요형 질문. 복합 질문은 “그럴 수도 있습니다.” 처리 가능.</td></tr>
+        <tr><td>답변</td><td>“네, 그렇습니다.” / “아니요, 그렇지 않습니다.” / “그럴 수도 있습니다.” / “중요하지 않습니다.” 중 하나만 출력.</td></tr>
+        <tr><td>AI 설명</td><td>부연 설명, 이유, 정답 방향, 내부 판단 과정은 표시하지 않는다.</td></tr>
+        <tr><td>전환</td><td>세 번째 답변 직후 질문창을 닫고 라운드 완료 팝업을 자동 표시한다.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>8. 최종 발의와 전체 내막 공개</h2>
+    <ol class="sequence">
+      <li><b>최종 발의 예고</b> — 네 장의 그림과 핵심 기록이 차례로 쌓이는 연출을 보여준다.</li>
+      <li><b>정답 입력</b> — 피해자, 가해자, 장소, 동기, 사망 원인, 숨겨진 과거를 입력한다.</li>
+      <li><b>판정</b> — 맞으면 해결, 틀리면 미해결로 표시한다. 오답이어도 다음 해설을 막지 않는다.</li>
+      <li><b>전체 내막</b> — ROUND 1~4 그림을 한 장씩 다시 보여주며 각 장면이 의미했던 사실을 설명한다.</li>
+      <li><b>사건 타임라인</b> — 12년 전 금화 절도 → 마크의 기록 발견 → 그랜트의 위장 계획 → 배전실 감전 사망 순서로 공개한다.</li>
+      <li><b>개인 결과</b> — 정답 여부, 실제 플레이 시간, 시간 페널티, 사용 질문 수, 포기 질문 수, 최종 순위를 보여준다.</li>
+    </ol>
+    <div class="card"><h3>최종 해설의 핵심</h3><p>그랜트는 12년 전 금화 절도와 연결되어 있었다. 마크가 관련 기록을 발견하자, 그랜트는 전기 사고처럼 보이도록 배전실 환경을 조작했다. 젖은 바닥과 차단기, 분장실의 스프레이 병, 과거 기록이 하나의 사건으로 연결된다. 실제 확정 내막은 콘텐츠 검수 후 서버 사건 데이터로 관리한다.</p></div>
+
+    <h2>9. 결과 화면과 랭킹 기준</h2>
+    <p class="lead">점수 하나로 의미를 숨기지 않고, 정답 여부·질문 수·시간을 그대로 보여준다.</p>
+    <table>
+      <thead><tr><th>표시 항목</th><th>정의</th><th>랭킹 정렬</th></tr></thead>
+      <tbody>
+        <tr><td>해결 여부</td><td>최종 필수 요소를 모두 맞혔는지</td><td>정답자가 미해결자보다 우선</td></tr>
+        <tr><td>사용 질문 수</td><td>4라운드에서 실제 확정한 질문 합계 4~12</td><td>적을수록 우선</td></tr>
+        <tr><td>공식 기록 시간</td><td>서버 시작~완료 시간 + 질문/시간의 방/오답 페널티</td><td>짧을수록 우선</td></tr>
+        <tr><td>완료 시각</td><td>동률 시 먼저 완료한 사람</td><td>빠른 완료 시각 우선</td></tr>
+      </tbody>
+    </table>
+    <div class="rank"><b>1위</b><span>닉네임A · 해결</span><span>질문 6회</span><span>14:32</span></div><div class="rank"><b>2위</b><span>닉네임B · 해결</span><span>질문 6회</span><span>16:08</span></div><div class="rank"><b>3위</b><span>닉네임C · 해결</span><span>질문 7회</span><span>13:15</span></div>
+    <div class="callout"><b>권장 정렬 키:</b> <code>solved DESC, questions_used ASC, official_time_ms ASC, completed_at ASC</code>. 질문 수가 같은 경우에만 시간이 순위를 가른다.</div>
+
+    <h2>10. Google 로그인과 사건당 1회 제한</h2>
+    <table>
+      <thead><tr><th>순서</th><th>동작</th><th>보안 기준</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>사건 시작 전에 Google Identity Services가 공식 로그인 버튼을 렌더링한다.</td><td>임의로 만든 Google 모양 버튼을 사용하지 않는다.</td></tr>
+        <tr><td>2</td><td>로그인 팝업에서 받은 ID 토큰을 HTTPS로 서버에 전달한다.</td><td>브라우저에서 디코딩한 값만 믿지 않는다.</td></tr>
+        <tr><td>3</td><td>서버가 토큰 서명, <code>aud</code>, <code>iss</code>, <code>exp</code>를 검증한다.</td><td>Google 계정 키는 이메일 대신 변경되지 않는 <code>sub</code>를 사용한다.</td></tr>
+        <tr><td>4</td><td>서버가 <code>(google_sub, case_id)</code> 기존 시도를 조회한다.</td><td>완료 상태면 재시작 차단, 진행 중이면 기존 세션 재개.</td></tr>
+        <tr><td>5</td><td>새 시도라면 서버에 시작 시간을 기록하고 게임 세션 쿠키를 발급한다.</td><td><code>HttpOnly, Secure, SameSite=Lax</code> 세션 쿠키 권장.</td></tr>
+        <tr><td>6</td><td>완료 시 서버 트랜잭션으로 결과와 랭킹 레코드를 확정한다.</td><td>완료 요청 재전송에도 결과가 한 번만 생성되도록 멱등 처리.</td></tr>
+      </tbody>
+    </table>
+    <div class="warn"><b>중요한 기술 조건:</b> 현재처럼 정적 HTML과 클라이언트 Puter 호출만으로는 계정당 1회 제한과 공정한 랭킹을 보장할 수 없다. Google 토큰 검증, 시도 잠금, 공식 시간 계산, 결과 저장을 담당하는 서버 API와 데이터베이스가 반드시 필요하다.</div>
+
+    <h2>11. 서버 데이터 모델</h2>
+    <table>
+      <thead><tr><th>테이블</th><th>주요 필드</th><th>핵심 제약</th></tr></thead>
+      <tbody>
+        <tr><td><code>users</code></td><td>id, google_sub, display_name, avatar_url, created_at</td><td><code>UNIQUE(google_sub)</code></td></tr>
+        <tr><td><code>cases</code></td><td>id, slug, version, title, is_active</td><td><code>UNIQUE(slug, version)</code></td></tr>
+        <tr><td><code>attempts</code></td><td>id, user_id, case_id, status, current_round, started_at, completed_at, solved, official_time_ms, questions_used</td><td><code>UNIQUE(user_id, case_id)</code></td></tr>
+        <tr><td><code>attempt_events</code></td><td>attempt_id, seq, event_type, round_no, payload_json, server_at</td><td><code>UNIQUE(attempt_id, seq)</code></td></tr>
+        <tr><td><code>questions</code></td><td>attempt_id, round_no, question_no, text, answer, penalty_ms, created_at</td><td><code>UNIQUE(attempt_id, round_no, question_no)</code></td></tr>
+        <tr><td><code>final_answers</code></td><td>attempt_id, answer_json, solved, submitted_at</td><td><code>UNIQUE(attempt_id)</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2>12. 필요한 서버 API</h2>
+    <div class="api"><b>POST /api/auth/google</b><span>ID 토큰 검증, 사용자 생성/조회, 보안 세션 발급</span></div>
+    <div class="api"><b>POST /api/cases/mark/start</b><span>신규 시도 생성 또는 진행 중 시도 재개, 완료된 경우 재도전 거부</span></div>
+    <div class="api"><b>GET /api/attempt/current</b><span>현재 라운드·공개 단서·질문 기록·서버 시간 복구</span></div>
+    <div class="api"><b>POST /api/attempt/clue</b><span>단서 확인 이벤트 저장, 미공개 라운드 접근 검증</span></div>
+    <div class="api"><b>POST /api/attempt/companion</b><span>현재 공개 정보 범위에서 동료 의견 생성 또는 기존 의견 반환</span></div>
+    <div class="api"><b>POST /api/attempt/question</b><span>라운드별 3회 제한 검증, +1분 반영, 집사 판정 저장</span></div>
+    <div class="api"><b>POST /api/attempt/advance</b><span>라운드 완료 조건 검증 후 다음 그림과 단서 데이터 공개</span></div>
+    <div class="api"><b>POST /api/attempt/final</b><span>정답 판정, 완료 잠금, 공식 기록·순위 계산</span></div>
+    <div class="api"><b>GET /api/rankings/mark</b><span>상위 순위와 내 순위 반환. 이메일 등 개인정보는 공개하지 않음</span></div>
+
+    <h2>13. 중복 플레이 방지와 기록 신뢰성</h2>
+    <ul class="check">
+      <li>로컬스토리지나 쿠키만으로 재도전을 막지 않는다. 삭제·변조가 가능하므로 서버 고유 제약을 사용한다.</li>
+      <li>Google 이메일이 아니라 ID 토큰의 <code>sub</code> 값을 사용자 식별키로 사용한다.</li>
+      <li>진행 도중 브라우저를 닫으면 같은 시도를 이어서 한다. 새 시도로 간주하지 않는다.</li>
+      <li>완료된 사건은 같은 계정으로 다시 플레이할 수 없고, 최종 해설과 자기 기록만 다시 볼 수 있다.</li>
+      <li>공식 시간은 클라이언트 타이머가 아니라 서버의 시작·이벤트·완료 시간을 기준으로 계산한다.</li>
+      <li>질문 수, 라운드 진행, 페널티는 서버가 검증한다. 화면 개발자 도구로 값을 바꿔도 랭킹에는 반영되지 않는다.</li>
+      <li>버전이 다른 사건은 별개의 <code>case_id</code>로 취급할 수 있으나, 운영자가 새 버전을 새 사건으로 공개할 때만 허용한다.</li>
+    </ul>
+
+    <h2>14. 모바일 우선 상세 규격</h2>
+    <table>
+      <thead><tr><th>항목</th><th>규격</th><th>검수 기준</th></tr></thead>
+      <tbody>
+        <tr><td>중앙 팝업</td><td>폭 <code>calc(100vw - 24px)</code>, 최대 높이 92dvh</td><td>375px에서 팝업·닫기·다음 버튼이 잘리지 않음</td></tr>
+        <tr><td>그림</td><td>원본 비율 유지, 핀치 확대 또는 가로 스크롤</td><td>이미지 찌그러짐과 핵심 단서 크롭 없음</td></tr>
+        <tr><td>동료 선택</td><td>2×2 또는 한 열, 초상 최소 52px, 터치 영역 최소 56px</td><td>말풍선 결과가 팝업 중앙에 바로 교체 표시</td></tr>
+        <tr><td>질문 버튼</td><td>추천 문장 전체 표시, 한 열, 최소 높이 56px</td><td>긴 문장이 말줄임 없이 읽힘</td></tr>
+        <tr><td>주 행동</td><td>팝업 하단에 1개, 키보드 노출 시 입력창 위에 유지</td><td>모바일 브라우저 하단 UI와 겹치지 않음</td></tr>
+        <tr><td>배경</td><td>팝업 중 스크롤 잠금 및 70~82% 어둡게</td><td>메인화면의 버튼이 눌리지 않음</td></tr>
+        <tr><td>테스트 폭</td><td>375 / 390 / 430 / 768 / 1440px</td><td>각 폭에서 4라운드 전체 클릭 시나리오 통과</td></tr>
+      </tbody>
+    </table>
+
+    <h2>15. 생성해야 할 그림</h2>
+    <table>
+      <thead><tr><th>파일</th><th>장면</th><th>필수 시각 요소</th><th>모바일 안전영역</th></tr></thead>
+      <tbody>
+        <tr><td><code>round-01-electrical-room.webp</code></td><td>배전실 발견 현장</td><td>배전반, 젖은 바닥, 작업가방</td><td>단서 3개를 중앙 80% 안에 배치</td></tr>
+        <tr><td><code>round-02-mark-work.webp</code></td><td>마크의 작업 흔적</td><td>장갑, 일정표, 낡은 열쇠</td><td>작은 글자는 별도 단서 팝업에서 확대</td></tr>
+        <tr><td><code>round-03-dressing-room.webp</code></td><td>분장실</td><td>스프레이 병, 잔류물, 찢긴 티켓</td><td>좌우 크롭에도 병과 티켓 유지</td></tr>
+        <tr><td><code>round-04-archive.webp</code></td><td>기록 보관실</td><td>신문, 금화 목록, 두 사람의 연결 자료</td><td>텍스트 원문 대신 시각 상징 중심</td></tr>
+        <tr><td><code>ending-timeline-01~04.webp</code></td><td>최종 내막 해설</td><td>과거 절도, 기록 발견, 위장 준비, 사망 장면</td><td>세로 카드 4장으로도 읽히도록 제작</td></tr>
+      </tbody>
+    </table>
+
+    <h2>16. 구현 단계</h2>
+    <table>
+      <thead><tr><th>단계</th><th>구현 범위</th><th>완료 조건</th></tr></thead>
+      <tbody>
+        <tr><td>1차 · 플레이 셸</td><td>메인 현황판, 공통 팝업 관리자, 배경 잠금, 팝업 전환</td><td>모든 선택과 결과가 중앙 팝업 안에서만 진행됨</td></tr>
+        <tr><td>2차 · 4라운드</td><td>그림 4장, 단서 12개, 동료 의견, 질문 최대 12개, 자동 전환</td><td>라운드마다 동일한 10단계 순서가 누락 없이 반복됨</td></tr>
+        <tr><td>3차 · 엔딩</td><td>최종 발의, 전체 내막, 그림 타임라인, 개인 결과</td><td>정답·오답 모두 해설과 기록 화면에 도달</td></tr>
+        <tr><td>4차 · 계정/서버</td><td>Google GIS, 토큰 검증, 시도 저장, 1회 제한, 재개</td><td>완료 계정 재시작 차단, 진행 중 계정 상태 복원</td></tr>
+        <tr><td>5차 · 랭킹/QA</td><td>공식 시간, 질문 수, 순위, 모바일 전수 테스트</td><td>서버 값만으로 순위 산정, 다섯 화면 폭 전체 통과</td></tr>
+      </tbody>
+    </table>
+
+    <h2>17. 최종 인수 테스트</h2>
+    <ul class="check">
+      <li>로그인하지 않으면 사건 시작과 기록 등록이 불가능하다.</li>
+      <li>ROUND 1 그림부터 ROUND 4 그림까지 중앙 팝업으로만 순서대로 진행된다.</li>
+      <li>각 라운드에서 단서 3개, 동료 의견, 질문 최대 3개가 빠짐없이 제공된다.</li>
+      <li>세 번째 질문 결과 직후 다음 라운드 안내 팝업이 자동으로 열린다.</li>
+      <li>동료는 현재까지 공개된 정보만 말하며 추천 질문 버튼이 질문 팝업에 추가된다.</li>
+      <li>질문·단서·동료 결과를 사건 기록에서 다시 볼 수 있다.</li>
+      <li>ROUND 4 종료 뒤 정답 여부와 관계없이 전체 내막과 네 장의 그림 해설을 본다.</li>
+      <li>최종 결과에 정답 여부, 공식 시간, 페널티, 사용 질문 수, 내 순위가 표시된다.</li>
+      <li>같은 Google 계정으로 같은 사건을 두 번째 시작할 수 없다.</li>
+      <li>중단 후 재접속하면 새 게임이 아니라 기존 라운드와 기록을 복구한다.</li>
+      <li>375px 모바일에서 팝업, 그림, 말풍선, 추천 질문, 결과 버튼이 잘리지 않는다.</li>
+    </ul>
+
+    <h2>18. Google 로그인 기술 참고</h2>
+    <div class="card source"><p>Google Identity Services는 공식 버튼과 팝업/리디렉션 로그인 흐름을 제공하지만, 웹사이트 자체 세션은 별도로 관리해야 한다. 로그인 후 받은 ID 토큰은 서버에서 검증하고, 사용자 식별에는 이메일이 아닌 <code>sub</code>를 사용한다.</p><p><a href="https://developers.google.com/identity/gsi/web/guides/overview">Google Identity Services 개요</a> · <a href="https://developers.google.com/identity/gsi/web/guides/display-button">공식 로그인 버튼 표시</a> · <a href="https://developers.google.com/identity/gsi/web/guides/integrate">웹 통합 고려사항</a> · <a href="https://developers.google.com/identity/gsi/web/guides/verify-google-id-token">서버에서 ID 토큰 검증</a></p></div>
+  </main>
+</body>
+</html>

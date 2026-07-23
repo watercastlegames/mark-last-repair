@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071423">
+  <meta name="description" content="피의게임 X를 보고 팬의 마음으로 바이브코딩한 팬 프로젝트와 전체 공개 개발 소스를 소개합니다.">
+  <title>개발자 정보 · Water Castle Games</title>
+  <link rel="stylesheet" href="assets/css/developer.css?v=round54">
+</head>
+<body>
+  <header class="developer-nav">
+    <a class="back-link" href="index.html" aria-label="마크의 마지막 수리 게임으로 돌아가기">← 게임으로</a>
+    <span>WATER CASTLE GAMES</span>
+  </header>
+
+  <main>
+    <section class="developer-hero" aria-labelledby="developerTitle">
+      <div class="hero-copy">
+        <span class="eyebrow">DEVELOPER FILE</span>
+        <h1 id="developerTitle">피의게임 X를 보고,<br><em>팬의 마음으로 만들었습니다.</em></h1>
+        <p>이 게임은 피의게임 X에서 느낀 추리와 긴장감의 재미를 직접 구현해 보고 싶어, 팬의 마음으로 AI와 함께 바이브코딩한 비공식 팬 프로젝트입니다. 게임뿐 아니라 기획과 개발 과정도 함께 나누고자 합니다.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="https://github.com/watercastlegames" target="_blank" rel="noopener noreferrer">GitHub 공개 소스 확인</a>
+          <a class="secondary-link" href="https://www.threads.com/@watercastlegames?hl=ko" target="_blank" rel="noopener noreferrer">Threads에서 제작 기록 보기</a>
+        </div>
+      </div>
+      <figure class="hero-visual">
+        <img src="assets/electrical-room.png" alt="폐극장 배전실을 표현한 마크의 마지막 수리 게임 장면">
+        <figcaption>CASE 01 · 마크의 마지막 수리</figcaption>
+      </figure>
+    </section>
+
+    <section class="developer-section source-section" aria-labelledby="sourceTitle">
+      <div class="section-heading">
+        <span>OPEN SOURCE</span>
+        <h2 id="sourceTitle">이 게임의 모든 개발 소스를 공개합니다</h2>
+        <p>화면 구성부터 AI 심문, 동료 의견, 기록 저장과 모바일 대응까지 실제 게임에 사용된 소스를 모두 공개합니다. 누구나 이 개발 소스를 바탕으로 새로운 사건과 테마를 자신만의 바이브코딩 방식으로 만들어 보세요.</p>
+      </div>
+      <div class="source-grid">
+        <article>
+          <b>FRONTEND</b>
+          <h3>HTML · CSS · JavaScript</h3>
+          <p>별도의 무거운 게임 엔진 없이 모바일 브라우저에서도 실행되는 단계형 미스터리 UI로 제작했습니다.</p>
+        </article>
+        <article>
+          <b>AI GAME MASTER</b>
+          <h3>Puter.js 기반 AI 판정</h3>
+          <p>공개된 단서와 질문 기록을 바탕으로 집사의 답변과 동료 의견을 생성하도록 규칙 중심 프롬프트를 구성했습니다.</p>
+        </article>
+        <article>
+          <b>RECORD</b>
+          <h3>Firebase 로그인 · 랭킹</h3>
+          <p>Google 로그인과 Firestore를 사용해 완료 시간, 질문 횟수, 정답 평가를 저장하고 같은 사건의 중복 기록을 관리합니다.</p>
+        </article>
+        <article>
+          <b>VIBE CODING</b>
+          <h3>처음부터 끝까지 바이브코딩</h3>
+          <p>기획, 코딩, 디버깅, 문서 작성과 이미지 제작까지 GPT와 대화하며 완성했습니다. 코드를 잘 몰라도 아이디어와 공개 소스로 새로운 테마에 도전할 수 있습니다.</p>
+        </article>
+      </div>
+      <a class="wide-github-link" href="https://github.com/watercastlegames" target="_blank" rel="noopener noreferrer">
+        <img src="assets/images/github.svg" alt="" width="28" height="28" aria-hidden="true">
+        <span><small>PUBLIC SOURCE HUB</small><strong>github.com/watercastlegames</strong></span>
+        <b aria-hidden="true">↗</b>
+      </a>
+    </section>
+
+    <section class="developer-section project-section" aria-labelledby="projectTitle">
+      <div class="section-heading">
+        <span>ABOUT THIS PROJECT</span>
+        <h2 id="projectTitle">마크의 마지막 수리 · CASE 01</h2>
+      </div>
+      <div class="project-layout">
+        <div class="project-description">
+          <p>사진 속 단서를 조사하고, 동료와 의견을 나누고, 집사에게 질문하며 사건의 전말을 완성하는 AI 미스터리 게임입니다. 네 번의 라운드 동안 새 사진과 단서가 공개되고, 질문과 힌트를 사용할수록 개인 시간이 늘어납니다.</p>
+          <ul>
+            <li>라운드별 사진·현장 단서 공개</li>
+            <li>공개된 정보만 사용하는 AI 동료 의견</li>
+            <li>예·아니요·그럴 수도 있습니다·중요하지 않습니다 판정</li>
+            <li>개인 시간과 질문 횟수를 반영한 최종 결과</li>
+            <li>Google 로그인 기반 기록 및 랭킹</li>
+          </ul>
+        </div>
+        <aside class="fan-notice">
+          <span>UNOFFICIAL FAN PROJECT</span>
+          <strong>피의게임 X 팬 프로젝트</strong>
+          <p>피의게임 X를 재미있게 본 팬이 애정을 담아 만든 비공식 팬게임입니다. 방송사·제작진·출연자와 공식적인 관련은 없으며, 등장 명칭과 이미지는 게임용 가상 설정으로 재구성했습니다.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="developer-section other-games" aria-labelledby="gamesTitle">
+      <div class="section-heading">
+        <span>MORE FROM THE DEVELOPER</span>
+        <h2 id="gamesTitle">개발자의 다른 게임</h2>
+        <p>Water Castle Games가 만들고 운영하는 다른 프로젝트도 만나보세요.</p>
+      </div>
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.SonFootballerTycoon.WaterCastleGames&amp;hl=ko" target="_blank" rel="noopener noreferrer">
+        <img src="assets/images/son-game-icon.jpg" alt="SON 키우기 타이쿤 아들을 축구 월클선수로 게임 아이콘">
+        <span>
+          <small>MOBILE FOOTBALL TYCOON</small>
+          <strong>SON 키우기 타이쿤 : 아들을 축구 월클선수로</strong>
+          <p>아들을 훈련시키고 커리어를 성장시켜 세계적인 축구 선수로 키우는 모바일 육성 타이쿤 게임입니다.</p>
+          <b>Google Play에서 보기 →</b>
+        </span>
+      </a>
+    </section>
+
+    <section class="developer-contact" aria-labelledby="contactTitle">
+      <span>DEVELOPMENT LOG &amp; CONTACT</span>
+      <h2 id="contactTitle">새로운 제작 과정은 Threads에 기록합니다.</h2>
+      <p>업데이트, 시행착오, 다음 게임에 대한 이야기를 확인할 수 있습니다.</p>
+      <a href="https://www.threads.com/@watercastlegames?hl=ko" target="_blank" rel="noopener noreferrer">
+        <img src="assets/images/threads.svg" alt="" width="24" height="24" aria-hidden="true">
+        @watercastlegames
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <b>WATER CASTLE GAMES</b>
+    <p>게임을 만들고, 만드는 과정까지 공유합니다.</p>
+    <a href="index.html">마크의 마지막 수리 플레이하기</a>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+name: 버그 제보
+description: 게임 진행, 모바일 화면 또는 AI 판정 문제를 알려 주세요.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 문제 설명
+      description: 어떤 문제가 발생했는지 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 순서
+      description: 문제가 발생하기까지 누른 버튼과 질문 내용을 순서대로 적어 주세요.
+      placeholder: |
+        1. ROUND 1 시작
+        2. 동료 의견에서 최예선 선택
+        3. 추천 질문 선택
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 실행 환경
+      description: 휴대전화·PC, 브라우저와 대략적인 화면 크기를 적어 주세요.
+      placeholder: Galaxy / Chrome / 360px
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 화면 또는 오류 내용
+      description: 스크린샷이나 콘솔 오류가 있다면 첨부해 주세요. 개인정보와 로그인 토큰은 가려 주세요.

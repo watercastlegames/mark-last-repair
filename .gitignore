@@ -1,0 +1,69 @@
+# Local references and temporary outputs
+tmp/
+release/
+*.tmp
+*.log
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*credentials*
+*secret*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Generated portrait source files not used by the live game
+assets/companion-*.png
+assets/companion-*-v3.jpg
+assets/companion-*-v4.png
+
+# Historical bundles; keep the current live bundle
+assets/js/game-round12.bundle.js
+assets/js/game-round14.bundle.js
+assets/js/game-round15.bundle.js
+assets/js/game-round16.bundle.js
+assets/js/game-round17.bundle.js
+assets/js/game-round18.bundle.js
+assets/js/game-round19.bundle.js
+assets/js/game-round20.bundle.js
+assets/js/game-round21.bundle.js
+assets/js/game-round22.bundle.js
+assets/js/game-round23.bundle.js
+assets/js/game-round24.bundle.js
+assets/js/game-round25.bundle.js
+assets/js/game-round26.bundle.js
+assets/js/game-round27.bundle.js
+assets/js/game-round28.bundle.js
+assets/js/game-round29.bundle.js
+assets/js/game-round30.bundle.js
+assets/js/game-round31.bundle.js
+assets/js/game-round32.bundle.js
+assets/js/game-round33.bundle.js
+assets/js/game-round34.bundle.js
+assets/js/game-round35.bundle.js
+assets/js/game-round36.bundle.js
+assets/js/game-round37.bundle.js
+assets/js/game-round38.bundle.js
+assets/js/game-round39.bundle.js
+assets/js/game-round40.bundle.js
+assets/js/game-round41.bundle.js
+assets/js/game-round42.bundle.js
+assets/js/game-round43.bundle.js
+assets/js/game-round44.bundle.js
+assets/js/game-round45.bundle.js
+assets/js/game-round50.bundle.js

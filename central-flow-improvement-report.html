@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마크의 마지막 수리 · 중앙 진행 UX 개선 보고서</title>
+  <style>
+    :root{--ink:#172436;--muted:#617187;--line:#d9e2ec;--paper:#fff;--bg:#f2f6fa;--navy:#0b1c31;--blue:#276ea9;--gold:#c68c22;--red:#ad3f42;--green:#277756}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Noto Sans KR","Malgun Gothic",sans-serif}.page{max-width:1120px;margin:auto;padding:34px 22px 70px}.cover{padding:34px;border-radius:18px;background:linear-gradient(135deg,#102b48,#172033);color:#fff;box-shadow:0 15px 35px #102b4826}.cover small{color:#f1c15d;font-weight:800;letter-spacing:.12em}.cover h1{margin:8px 0;font-size:31px;letter-spacing:-.06em}.cover p{max-width:760px;margin:0;color:#d2deeb}.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}.meta span{padding:5px 9px;border:1px solid #ffffff3b;border-radius:99px;color:#e3edf7;font-size:12px}.notice{margin:22px 0;padding:16px 18px;border-left:4px solid var(--red);border-radius:8px;background:#fff1f1;color:#722d32}h2{margin:42px 0 12px;font-size:23px;letter-spacing:-.04em}h3{margin:0 0 7px;font-size:16px}.section-note{margin:0 0 14px;color:var(--muted)}.card{margin:14px 0;padding:19px 20px;border:1px solid var(--line);border-radius:13px;background:var(--paper);box-shadow:0 4px 15px #233a5210}table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:11px;overflow:hidden}th,td{padding:12px;vertical-align:top;border-bottom:1px solid var(--line);text-align:left}th{background:#edf4fa;font-size:13px}tr:last-child td{border-bottom:0}.state{display:inline-block;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:800;white-space:nowrap}.state.problem{background:#ffe6e6;color:#9b3333}.state.keep{background:#e5f4eb;color:#216b47}.state.new{background:#e5f0fc;color:#245f97}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:18px 0}.flow div{position:relative;padding:12px 9px;border-radius:9px;background:#dfeaf5;text-align:center;font-size:13px;font-weight:800}.flow div:not(:last-child):after{content:"→";position:absolute;right:-8px;top:50%;z-index:1;transform:translateY(-50%);color:#50789f;font-size:19px}.wire{margin:15px 0;padding:18px;border:1px dashed #7d9abc;border-radius:13px;background:#f8fbfe}.wire-top{padding:10px;border-radius:7px;background:#102b48;color:#fff;text-align:center;font-size:12px}.wire-stage{min-height:215px;margin:10px 0;padding:18px;border:2px solid #d6ae54;border-radius:10px;background:#fff;text-align:center}.wire-stage b{display:block;font-size:19px}.wire-stage p{color:#617187}.wire-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.wire-actions span{padding:11px;border-radius:7px;background:#276ea9;color:#fff;text-align:center;font-weight:800;font-size:13px}.wire-actions span:nth-child(2){background:#38546f}.wire-bottom{padding:9px;border-radius:7px;background:#dfeaf5;text-align:center;font-size:12px}.checklist{padding-left:0;list-style:none}.checklist li{margin:9px 0;padding-left:27px;position:relative}.checklist li:before{content:"□";position:absolute;left:0;color:var(--blue);font-size:19px;line-height:1}.priority{display:grid;grid-template-columns:110px 1fr;gap:10px;margin:8px 0;padding:12px;border-radius:8px;background:#f5f8fb}.priority b{color:var(--blue)}.rule{padding:13px 15px;border-radius:9px;background:#fff8e9;color:#765617}@media(max-width:700px){.page{padding:18px 12px 50px}.cover{padding:24px 19px}.cover h1{font-size:25px}h2{margin-top:31px;font-size:20px}table{display:block;overflow-x:auto;white-space:normal}th,td{min-width:125px;padding:10px;font-size:13px}.flow{grid-template-columns:1fr}.flow div:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-17px;transform:translateX(50%)}.wire-actions{grid-template-columns:1fr}.priority{grid-template-columns:1fr;gap:2px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="cover">
+      <small>UX / UI IMPROVEMENT REPORT · 2026-07-22</small>
+      <h1>「마크의 마지막 수리」 중앙 진행 UX 개선 보고서</h1>
+      <p>현재 프로토타입의 선택 요소·결과 화면·모바일 동선을 전수 목록화하고, 화면을 덧붙이는 방식이 아닌 하나의 중앙 진행 흐름으로 재구성하기 위한 설계 문서입니다.</p>
+      <div class="meta"><span>대상: index.html</span><span>우선 기준: 모바일</span><span>목적: 몰입·명확성·재확인 가능성</span></div>
+    </header>
+
+    <section class="notice"><b>현 상태 진단</b><br>질문 단계의 중앙 허브는 추가됐지만, 사건 개요·현장·동료 의견은 여전히 서로 다른 패널과 모달에 흩어져 있습니다. 따라서 사용자는 “지금 무엇을 눌러야 하는지”와 “이전 정보가 어디에 있는지”를 매 단계 다시 판단해야 합니다. 아래 개선안은 이 구조를 전체 단계에 적용하는 것을 목표로 합니다.</section>
+
+    <h2>1. 현재 화면·버튼·결과 전수 목록</h2>
+    <p class="section-note">각 항목은 현재 구현 위치와 문제를 기준으로 분류했습니다. 동작을 삭제하기보다 중앙 진행 카드에 흡수합니다.</p>
+    <table>
+      <thead><tr><th>구간</th><th>현재 선택 / 버튼</th><th>현재 결과</th><th>문제</th><th>개선 처리</th></tr></thead>
+      <tbody>
+        <tr><td>시작 안내</td><td>사건 개요 확인하기</td><td>시작 모달 닫힘</td><td>게임 시작 후 안내가 사라짐</td><td>중앙 진행 카드의 STEP 1로 전환, ‘규칙 다시 보기’에서 재열람</td></tr>
+        <tr><td>사건 개요</td><td>현장 사진 보기, 시간의 방</td><td>현장 단계로 이동 / 별도 모달</td><td>선택의 우선순위가 섞임</td><td>주 행동 1개만 중앙에 노출, 시간의 방은 ‘선택 행동’으로 분리</td></tr>
+        <tr><td>현장 조사</td><td>단서 물음표 3개, 동료 의견 듣기</td><td>사진 위 단서 문구 / 다음 단계 버튼</td><td>사진·버튼·문구 위치가 화면 크기에 따라 분산</td><td>중앙 사진 캔버스 + 하단 단서 목록 3개 + 선택 결과 카드</td></tr>
+        <tr><td>동료 의견</td><td>동료 카드 4개, 투표실, 정답 발의</td><td>말풍선, 추천 질문</td><td>한 동료의 말풍선과 다음 행동이 떨어져 있음</td><td>동료 선택 후 중앙 말풍선 아래에 ‘이 질문 사용’ 버튼을 바로 배치</td></tr>
+        <tr><td>투표실</td><td>추천 질문 버튼, 직접 입력, 질문</td><td>예/아니요/그럴 수도/중요하지 않음</td><td>질문 결과가 모달 안에만 머물고 기록 위치가 불명확</td><td>중앙 판정 카드 → 누적 사건 기록으로 즉시 저장</td></tr>
+        <tr><td>정답 발의</td><td>6개 입력, 정답 발의하기</td><td>정답 / 시간 +5분</td><td>입력 전에 필요한 요소가 한눈에 안 보임</td><td>중앙 체크리스트(범인·동기·방법·사망 원인) 충족 상태 표시 후 발의</td></tr>
+        <tr><td>복습</td><td>사건 개요/현장/동료/질문 기록</td><td>각각 다른 패널 또는 모달</td><td>복습 경로가 여러 곳</td><td>모든 단계에서 ‘사건 기록’ 버튼 하나로 통합</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. 목표 진행 구조</h2>
+    <div class="flow"><div>1. 사건 개요</div><div>2. 현장 단서</div><div>3. 동료 선택</div><div>4. 집사 판정</div><div>5. 정답 발의</div></div>
+    <div class="card"><h3>핵심 원칙</h3><p>한 화면에는 <b>현재 단계의 핵심 행동 1개</b>와 보조 행동 최대 2개만 둡니다. 결과는 새로운 패널이나 페이지가 아니라, 선택한 버튼이 있던 중앙 영역에서 크게 전환되어 나타납니다. 이전 정보는 화면을 되돌리는 대신 ‘사건 기록’ 하나로 접근합니다.</p></div>
+
+    <h2>3. 단계별 중앙 화면 개선안</h2>
+    <table>
+      <thead><tr><th>단계</th><th>중앙 메인 영역</th><th>주 행동</th><th>선택 직후 결과</th><th>보조 행동</th></tr></thead>
+      <tbody>
+        <tr><td>STEP 1</td><td>사건 개요 텍스트 + 키워드 5개</td><td>“현장으로 이동”</td><td>조명이 어두워지며 현장 카드 등장</td><td>규칙 다시 보기</td></tr>
+        <tr><td>STEP 2</td><td>비율 유지 현장 이미지 + 단서 진행도 0/3</td><td>단서 1개 선택</td><td>이미지 위 중앙 단서 카드, 확인 버튼</td><td>사건 기록</td></tr>
+        <tr><td>STEP 3</td><td>동료 4명 세로 카드</td><td>동료 1명 선택</td><td>선택 카드가 중앙 말풍선으로 확장, 추천 질문 버튼 표시</td><td>현장 단서 다시 보기</td></tr>
+        <tr><td>STEP 4</td><td>추천 질문 / 직접 입력 탭 + 질문 횟수</td><td>질문 확정</td><td>집사 판정 문장이 중앙 대형 카드로 등장, 기록 저장</td><td>사건 기록 · 동료 의견</td></tr>
+        <tr><td>STEP 5</td><td>핵심 요소 체크리스트 + 입력 폼</td><td>정답 발의</td><td>성공/실패 결과 카드와 시간 변동을 중앙 표시</td><td>사건 기록</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. 질문 단계 와이어프레임</h2>
+    <p class="section-note">현재 중앙 허브는 이 구조의 시작점입니다. 다음 구현에서는 같은 구조를 STEP 1~5 전체에 공통 적용합니다.</p>
+    <div class="wire">
+      <div class="wire-top">CASE FILE 01 · 개인 시간 00:00 · STEP 4 / 5</div>
+      <div class="wire-stage"><b>집사의 판단을 요청합니다</b><p>동료 추천 질문을 하나 고르거나, 직접 질문을 입력하세요.</p><p>선택한 질문 → <strong>예 / 아니요 / 그럴 수도 있습니다 / 중요하지 않습니다</strong><br>결과는 이 자리에 큰 카드로 표시되고 사건 기록에 저장됩니다.</p></div>
+      <div class="wire-actions"><span>동료 추천 질문 선택</span><span>직접 질문 입력</span><span>사건 기록</span><span>정답 발의</span></div>
+      <div class="wire-bottom">모바일: 한 줄 한 버튼 · 버튼 최소 높이 54px · 하단 고정 메뉴 없음</div>
+    </div>
+
+    <h2>5. 모바일 필수 규칙</h2>
+    <div class="card"><ul class="checklist"><li>가로 700px 이하에서는 모든 선택 카드를 한 열로 배치한다.</li><li>현재 단계 외의 좌우 패널과 중복 하단 버튼은 표시하지 않는다.</li><li>모든 주요 버튼의 높이는 최소 54px, 텍스트는 두 줄까지 허용한다.</li><li>현장 사진은 찌그러뜨리지 않고 가로 스크롤 또는 전체 보기 모달 중 하나로 통일한다.</li><li>선택 결과는 화면 중앙에 표시하고, 닫은 뒤에도 ‘사건 기록’에서 즉시 다시 볼 수 있어야 한다.</li><li>스크롤 이동은 선택한 카드 또는 결과 카드 위치로만 수행한다. 문서 최상단 이동은 금지한다.</li></ul></div>
+
+    <h2>6. 구현 우선순위 및 검수 기준</h2>
+    <div class="priority"><b>1차 · 구조</b><span>기존 3열 레이아웃을 공통 중앙 진행 카드로 교체하고, 단계마다 보이는 버튼을 단일 목록으로 관리한다.</span></div>
+    <div class="priority"><b>2차 · 결과</b><span>단서·동료·집사·정답 결과를 같은 중앙 결과 카드 컴포넌트로 통일하고 사건 기록에 누적한다.</span></div>
+    <div class="priority"><b>3차 · 모바일</b><span>375px / 390px / 430px 폭에서 버튼 잘림, 이미지 비율, 모달 스크롤, 고정 요소 겹침을 각각 확인한다.</span></div>
+    <div class="priority"><b>4차 · 전수 테스트</b><span>아래 체크리스트의 모든 버튼을 실제 순서대로 눌러 단계 전환·기록·재진입·시간 증가를 확인한다.</span></div>
+    <div class="rule"><b>배포 전 완료 조건:</b> “현재 단계에서 무엇을 누를지 3초 안에 알 수 있는가”, “결과를 닫은 뒤 다시 찾을 수 있는가”, “375px 폭에서 가로 스크롤 없이 버튼 문구를 읽을 수 있는가” 세 가지를 통과해야 합니다.</div>
+
+    <h2>7. 전수 검수 체크리스트</h2>
+    <div class="card"><ul class="checklist"><li>시작 안내 → 사건 개요 → 현장으로 이동</li><li>현장 단서 3개 각각 선택, 결과 확인, 단서 재열람</li><li>동료 4명 각각 선택, 말풍선 재열람, 추천 질문을 투표실에 반영</li><li>추천 질문 선택 / 직접 입력 / 3회 제한 / 개인 시간 증가</li><li>집사 답변 결과 확인 후 사건 기록에서 재열람</li><li>정답 발의 성공·실패 모두 결과 및 시간 변동 확인</li><li>사건 기록에서 사건 개요·단서·동료·질문 기록 재확인</li><li>375px·390px·430px 및 데스크톱에서 버튼·이미지·모달·스크롤 확인</li></ul></div>
+    <h2>8. 반드시 바꿔야 하는 화면 구조 — 상세 명세</h2>
+    <div class="notice"><b>결론:</b> 기존 화면을 CSS로 숨기고 다른 버튼을 덧붙이는 방식은 중단합니다. 아래의 <b>공통 화면 뼈대(Stage Shell)</b> 하나를 만들고, 단계별 내용만 교체합니다. 이 구조가 적용되어야 “무엇을 눌러야 하는지 모르는 문제”가 재발하지 않습니다.</div>
+    <div class="wire">
+      <div class="wire-top">① 상단 고정 정보 · 사건명 / STEP 2 of 5 / 개인 시간 / 사건 기록</div>
+      <div class="wire-stage"><b>② 중앙 진행 무대 — 현재 단계의 콘텐츠만</b><p>제목 → 한 줄 목표 → 선택 카드 또는 결과 카드 → 다음 행동 순서로 고정합니다.</p><p>좌측 사건 개요 패널, 우측 동료 패널, 별도 하단 모바일 버튼은 이 영역 밖에 두지 않습니다.</p></div>
+      <div class="wire-actions"><span>③ 주 행동 1개</span><span>④ 보조 행동 최대 2개</span></div>
+      <div class="wire-bottom">⑤ 사건 기록은 어디서든 열 수 있으나, 진행 단계 자체는 뒤로 밀지 않음</div>
+    </div>
+    <table>
+      <thead><tr><th>영역</th><th>항상 보이는 것</th><th>절대 두지 않을 것</th><th>구현 기준</th></tr></thead>
+      <tbody>
+        <tr><td>상단 바</td><td>사건명, 현재 STEP, 개인 시간, 사건 기록</td><td>질문하기·정답 발의 같은 중복 행동</td><td>높이 56px(모바일 52px), 스크롤 중에도 개인 시간 표시</td></tr>
+        <tr><td>중앙 무대</td><td>현재 목표 1문장, 현재 콘텐츠, 결과 카드</td><td>다른 단계의 카드·미래 단계 버튼</td><td>최대 폭 720px, 콘텐츠 변화 시 같은 영역 안에서 교체</td></tr>
+        <tr><td>행동 영역</td><td>주 행동 1개, 보조 행동 0~2개</td><td>동일 목적의 버튼 2개 이상</td><td>주 행동은 금색, 보조는 남색, 비활성 사유를 버튼 안에 표기</td></tr>
+        <tr><td>사건 기록</td><td>공개 정보·확인 단서·동료 의견·질문/답변</td><td>정답, 숨은 설정, AI 내부 판단 근거</td><td>전체 화면 모달 또는 바텀시트. 닫으면 원래 STEP·스크롤 위치 유지</td></tr>
+      </tbody>
+    </table>
+
+    <h2>9. 화면 상태 머신과 버튼 권한표</h2>
+    <p class="section-note">각 상태에 들어왔을 때 보이는 버튼과, 누를 수 없는 이유를 코드와 문구에서 동일하게 관리합니다.</p>
+    <table>
+      <thead><tr><th>상태</th><th>진입 조건</th><th>중앙 주 행동</th><th>보조 행동</th><th>비활성 조건 / 안내 문구</th><th>이탈 결과</th></tr></thead>
+      <tbody>
+        <tr><td>S1 · 사건 브리핑</td><td>게임 시작</td><td>현장 조사 시작</td><td>게임 규칙</td><td>없음</td><td>S2로 전환</td></tr>
+        <tr><td>S2-0 · 현장 미확인</td><td>브리핑 완료</td><td>단서 카드 1개 선택</td><td>사건 기록</td><td>“단서 3개를 확인하면 동료 회의가 열립니다”</td><td>선택 결과 카드 → S2-1</td></tr>
+        <tr><td>S2-1 · 현장 진행</td><td>단서 1~2개 확인</td><td>남은 단서 선택</td><td>확인 단서 다시 보기</td><td>동료 회의 버튼 비활성: “단서 1개 더 필요”</td><td>3개 완료 시 S3</td></tr>
+        <tr><td>S3 · 동료 회의</td><td>단서 3개 확인</td><td>동료 한 명 선택</td><td>사건 기록</td><td>질문하기 비활성: “동료 의견 4개 확인 필요”</td><td>말풍선 + 추천 질문 저장</td></tr>
+        <tr><td>S3-complete</td><td>동료 4명 확인</td><td>투표실로 이동</td><td>동료 의견 다시 보기</td><td>없음</td><td>S4</td></tr>
+        <tr><td>S4 · 질문 선택</td><td>투표실 입장</td><td>추천 질문 선택 또는 직접 입력</td><td>사건 기록 · 동료 의견</td><td>질문 확정 비활성: “질문을 입력하세요”</td><td>질문 확인 모달</td></tr>
+        <tr><td>S4-result</td><td>집사 판정 수신</td><td>다음 질문 / 정답 발의</td><td>판정 기록 보기</td><td>3회 소진 시 “이번 입장 질문을 모두 사용했습니다”</td><td>새 판정 또는 S5</td></tr>
+        <tr><td>S5 · 정답 발의</td><td>플레이어 선택</td><td>정답 발의 확정</td><td>사건 기록</td><td>필수 4요소 누락 시 해당 항목 이름을 표시</td><td>성공 또는 오답 결과</td></tr>
+      </tbody>
+    </table>
+
+    <h2>10. 기존 버튼의 폐기·이관 목록</h2>
+    <p class="section-note">동일 기능이 두 곳에 있는 문제를 제거하기 위한 실제 이관표입니다.</p>
+    <table>
+      <thead><tr><th>기존 ID / 위치</th><th>현재 기능</th><th>처리</th><th>새 위치 / 새 행동</th></tr></thead>
+      <tbody>
+        <tr><td><code>briefNext</code></td><td>현장 사진 보기</td><td><span class="state new">이관</span></td><td>S1 중앙 주 행동 “현장 조사 시작”</td></tr>
+        <tr><td><code>roomOpen</code></td><td>시간의 방 모달</td><td><span class="state new">이관</span></td><td>S2 보조 행동 “시간의 방 조사” — 시간 비용을 버튼에 명시</td></tr>
+        <tr><td><code>dot-a/b/c</code></td><td>사진 속 단서 선택</td><td><span class="state new">교체</span></td><td>사진 핀 + 하단 동일 단서 카드. 둘 중 하나만 조작 원본으로 사용</td></tr>
+        <tr><td><code>evidenceNext</code></td><td>동료 의견으로 이동</td><td><span class="state problem">폐기</span></td><td>세 번째 단서 결과 카드의 “동료 회의 시작” 하나로 통합</td></tr>
+        <tr><td>동료 카드 4개</td><td>의견 말풍선</td><td><span class="state new">이관</span></td><td>S3 중앙 선택 카드. 선택 후 같은 카드가 결과 말풍선으로 확장</td></tr>
+        <tr><td><code>teamNext</code></td><td>질문 단계 이동</td><td><span class="state problem">폐기</span></td><td>네 번째 의견 결과 카드의 “투표실로 이동” 하나로 통합</td></tr>
+        <tr><td><code>voteOpen</code> / <code>mobileVote</code> / <code>centerVote</code></td><td>질문 모달 열기</td><td><span class="state problem">3개 → 1개</span></td><td>S4 중앙 주 행동 “질문 선택하기”</td></tr>
+        <tr><td><code>answerOpen</code> / <code>mobileAnswer</code> / <code>centerAnswer</code></td><td>정답 발의</td><td><span class="state problem">3개 → 1개</span></td><td>S4-result/S5 중앙 주 행동 “사건의 전말 발의”</td></tr>
+        <tr><td><code>reviewNav</code> 4개 버튼</td><td>복습 화면 이동</td><td><span class="state problem">폐기</span></td><td>상단 “사건 기록” 버튼 하나 → 탭 4개(개요/단서/동료/판정)</td></tr>
+        <tr><td><code>guideAction</code> / 튜토리얼 오버레이</td><td>행동 안내</td><td><span class="state new">재설계</span></td><td>각 STEP 제목 아래 한 줄 목표 + 주 행동 버튼의 보조 설명으로 흡수</td></tr>
+      </tbody>
+    </table>
+
+    <h2>11. 결과 카드와 전환 연출 명세</h2>
+    <table>
+      <thead><tr><th>선택</th><th>선택 전 문구</th><th>결과 표현</th><th>결과 후 다음 버튼</th><th>보존 데이터</th></tr></thead>
+      <tbody>
+        <tr><td>현장 단서</td><td>“이 지점을 조사합니다”</td><td>사진은 0.2초 어두워지고 중앙 카드에 단서 1문장. 확인 시 진행도 +1</td><td>“다음 단서 찾기” 또는 “동료 회의 시작”</td><td>단서 ID, 확인 시각, 문장</td></tr>
+        <tr><td>동료 선택</td><td>“○○의 의견을 듣습니다”</td><td>선택한 초상화가 1.05배 확대, 아래 말풍선에 의견·추천 질문 표시</td><td>“이 질문 사용하기”, “다른 의견 듣기”</td><td>동료 ID, 의견 텍스트, 추천 질문</td></tr>
+        <tr><td>추천 질문</td><td>“이 질문으로 집사에게 묻겠습니까?”</td><td>질문 문장과 개인 시간 +1:00을 확인 카드로 표시</td><td>“질문 확정” / “문장 바꾸기”</td><td>질문 원문, 추천 동료</td></tr>
+        <tr><td>집사 판정</td><td>“집사가 판단 중입니다”</td><td>네 개의 허용 답변 중 하나만 중앙 대형 문장으로 표시. 이유/추가 설명 없음</td><td>“다음 질문” / “정답 발의”</td><td>질문, 답변, 질문 순번, 시간 비용</td></tr>
+        <tr><td>정답 발의</td><td>“전말을 제출합니다”</td><td>성공: 핵심 요소 확인 카드 / 실패: 틀린 항목은 공개하지 않고 시간 +5:00만 표시</td><td>성공 “결과 보기” / 실패 “사건 기록으로 돌아가기”</td><td>발의 내용, 성공 여부, 시간 비용</td></tr>
+      </tbody>
+    </table>
+    <div class="rule"><b>중요:</b> AI 집사 결과는 반드시 “네, 그렇습니다.” / “아니요, 그렇지 않습니다.” / “그럴 수도 있습니다.” / “중요하지 않습니다.” 중 하나만 표시합니다. 결과 카드에도 부연 설명·AI의 추론 과정·숨은 정보는 넣지 않습니다.</div>
+
+    <h2>12. 데이터 보존 및 재진입 규칙</h2>
+    <table>
+      <thead><tr><th>데이터</th><th>언제 저장</th><th>어디서 다시 보나</th><th>재진입 시 처리</th></tr></thead>
+      <tbody>
+        <tr><td>개인 시간</td><td>매초, 질문 확정, 시간의 방 체류, 오답 발의</td><td>상단 바 / 사건 기록 요약</td><td>게임 내 모든 단계에서 유지</td></tr>
+        <tr><td>확인 단서</td><td>단서 결과 확인 버튼</td><td>사건 기록 &gt; 현장</td><td>다시 눌러도 비용·진행도 중복 증가 없음</td></tr>
+        <tr><td>동료 의견</td><td>동료 말풍선 표시 완료</td><td>사건 기록 &gt; 동료</td><td>다시 눌러도 AI 호출·시간 비용 없음</td></tr>
+        <tr><td>추천 질문</td><td>동료 의견 저장과 동시에</td><td>투표실 추천 질문 목록</td><td>문장 선택만 가능, 질문 확정 전에는 비용 없음</td></tr>
+        <tr><td>질문과 판정</td><td>집사 답변 수신 완료</td><td>사건 기록 &gt; 집사 판정</td><td>투표실을 닫아도 질문 횟수·기록 유지</td></tr>
+        <tr><td>정답 발의 결과</td><td>제출 직후</td><td>최종 결과 / 사건 기록</td><td>오답 시간 비용은 한 번만 반영</td></tr>
+      </tbody>
+    </table>
+
+    <h2>13. 모바일 상세 규격</h2>
+    <table>
+      <thead><tr><th>항목</th><th>375px</th><th>390~430px</th><th>데스크톱</th><th>불합격 기준</th></tr></thead>
+      <tbody>
+        <tr><td>중앙 무대</td><td>좌우 12px 여백, 한 열</td><td>좌우 16px 여백, 한 열</td><td>최대 폭 720px 중앙</td><td>가로 스크롤 발생</td></tr>
+        <tr><td>주 행동 버튼</td><td>폭 100%, 높이 56px</td><td>폭 100%, 높이 56px</td><td>최대 폭 540px</td><td>두 줄 텍스트가 잘림</td></tr>
+        <tr><td>보조 버튼</td><td>한 열, 높이 48px</td><td>한 열 또는 2열</td><td>2열 가능</td><td>하단 고정 영역과 겹침</td></tr>
+        <tr><td>현장 이미지</td><td>원본 비율 유지, 가로 스와이프</td><td>원본 비율 유지, 가로 스와이프</td><td>전체 이미지 표시</td><td>object-fit으로 핵심 단서가 잘림/찌그러짐</td></tr>
+        <tr><td>결과 모달</td><td>상하 12px, 최대 높이 88vh</td><td>상하 16px, 최대 높이 88vh</td><td>최대 폭 620px</td><td>닫기 버튼 또는 결과 버튼이 화면 밖</td></tr>
+        <tr><td>스크롤</td><td>선택 후 결과 카드 상단으로</td><td>선택 후 결과 카드 상단으로</td><td>동일</td><td>문서 최상단으로 튐</td></tr>
+      </tbody>
+    </table>
+
+    <h2>14. 구현 단위와 완료 정의</h2>
+    <table>
+      <thead><tr><th>작업 단위</th><th>세부 산출물</th><th>완료 정의</th></tr></thead>
+      <tbody>
+        <tr><td>A. 공통 중앙 셸</td><td>상단 바, STEP 헤더, 중앙 무대, 행동 영역, 사건 기록 모달</td><td>모든 STEP이 같은 DOM 구조·CSS 토큰을 사용한다.</td></tr>
+        <tr><td>B. 단계 마이그레이션</td><td>S1~S5 콘텐츠와 버튼을 중앙 셸에 이관</td><td>기존 좌우 패널/중복 버튼/별도 진행 버튼이 제거된다.</td></tr>
+        <tr><td>C. 결과 컴포넌트</td><td>단서·동료·집사·정답 공통 결과 카드</td><td>선택 결과가 새 페이지·숨은 패널 없이 중앙에서 보인다.</td></tr>
+        <tr><td>D. 기록 저장소</td><td>단서, 동료, 추천 질문, 질문/답변, 시간 이벤트 로그</td><td>모달을 닫고 다시 열어도 모든 기록과 질문 횟수가 유지된다.</td></tr>
+        <tr><td>E. 반응형 QA</td><td>375/390/430/768/1440 폭 캡처 및 행동 테스트</td><td>아래 전수 시나리오가 모든 폭에서 통과한다.</td></tr>
+      </tbody>
+    </table>
+    <div class="card"><h3>최종 인수 기준</h3><ul class="checklist"><li>각 STEP에서 사용자가 누를 수 있는 버튼은 주 행동 1개와 보조 2개 이하이다.</li><li>선택 결과는 100% 중앙 무대 또는 중앙 모달에서 표시된다.</li><li>이전 정보는 사건 기록 하나에서 모두 재확인할 수 있다.</li><li>동료 의견을 다시 눌러도 AI 재호출·시간 비용이 없다.</li><li>질문 모달을 닫았다 열어도 질문 기록·잔여 횟수·추천 질문이 유지된다.</li><li>375px에서 모든 중요 버튼·닫기·결과 문구가 한 화면 폭 안에서 읽힌다.</li></ul></div>
+  </main>
+</body>
+</html>

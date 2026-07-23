@@ -1,0 +1,40 @@
+name: 새로운 사건 테마 제안
+description: 공개 소스를 활용한 새로운 미스터리 사건을 제안합니다.
+title: "[Theme] "
+labels:
+  - theme
+body:
+  - type: input
+    id: title
+    attributes:
+      label: 사건 제목
+    validations:
+      required: true
+  - type: textarea
+    id: premise
+    attributes:
+      label: 사건 개요
+      description: 첫 화면에서 공개할 정보만 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: answer
+    attributes:
+      label: 사건의 정답표
+      description: 피해자, 가해자, 장소, 사망 원인, 동기와 숨겨진 진실을 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: rounds
+    attributes:
+      label: 네 라운드 공개 계획
+      description: 각 라운드에서 어떤 종류의 단서를 공개할지 적어 주세요.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: 이미지와 인물
+      options:
+        - label: 실제 인물 사진이나 권리관계가 불분명한 방송 캡처를 사용하지 않습니다.
+          required: true

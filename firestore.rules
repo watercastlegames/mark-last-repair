@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /crime_mark_last_repair_v1/{userId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'caseId',
+          'displayName',
+          'score2',
+          'solved',
+          'questionsUsed',
+          'officialTimeMs',
+          'timeRoomVisits',
+          'submittedAt'
+        ])
+        && request.resource.data.caseId == 'mark-last-repair-v1'
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.score2 is int
+        && request.resource.data.score2 >= 0
+        && request.resource.data.score2 <= 12
+        && request.resource.data.solved == (request.resource.data.score2 == 12)
+        && request.resource.data.questionsUsed is int
+        && request.resource.data.questionsUsed >= 0
+        && request.resource.data.questionsUsed <= 12
+        && request.resource.data.officialTimeMs is int
+        && request.resource.data.officialTimeMs >= 0
+        && request.resource.data.officialTimeMs <= 604800000
+        && request.resource.data.timeRoomVisits is int
+        && request.resource.data.timeRoomVisits >= 0
+        && request.resource.data.timeRoomVisits <= 12
+        && request.resource.data.submittedAt == request.time;
+      allow update, delete: if false;
+    }
+  }
+}
