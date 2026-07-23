@@ -20,4 +20,4 @@
 
 Firebase 웹 설정의 `apiKey`는 클라이언트 식별용 공개 설정이며 비밀번호가 아닙니다. 실제 데이터 보호는 승인 도메인, Authentication과 `firestore.rules`가 담당합니다.
 
-공개 전에는 반드시 [공개 체크리스트](PUBLIC_RELEASE_CHECKLIST.md)를 다시 확인하세요.
+공개 전에는 반드시 [공개 체크리스트](../release/PUBLIC_RELEASE_CHECKLIST.md)를 다시 확인하세요.

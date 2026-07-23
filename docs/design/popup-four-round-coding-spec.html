@@ -16,7 +16,7 @@
       <p>기획 의도를 다시 해석하지 않고 그대로 구현하도록 파일, 상태, 함수, API, 데이터베이스, Google 로그인, Puter AI, 모바일, 테스트 계약을 고정한 실행 문서다.</p>
       <div class="meta"><span>프런트: HTML/CSS/Vanilla JS ES Modules</span><span>서버: IIS Classic ASP</span><span>DB: Microsoft SQL Server</span><span>인증: Google Identity Services</span><span>AI: Puter.js 어댑터</span></div>
     </header>
-    <section class="summary"><b>이 문서를 받는 구현 모델의 임무</b><br><code>popup-four-round-mystery-game-plan.html</code>의 UX를 아래 기술 계약대로 구현한다. 기존 <code>index.html</code>의 패널 구조를 확장하지 말고, 공통 팝업 관리자와 서버 세션 기반 상태 머신으로 교체한다.</section>
+    <section class="summary"><b>개발 과정 보관 문서</b><br>이 문서는 초기 서버형 설계를 기록한 자료다. 현재 실행 버전은 Firebase·브라우저 로컬 저장 구조를 사용하며, 실제 구현은 루트 <code>README.md</code>와 <code>assets/js</code>를 기준으로 확인한다.</section>
 
     <nav class="toc">
       <a href="#scope">1. 범위와 고정 결정</a><a href="#architecture">2. 아키텍처</a><a href="#files">3. 파일 구조</a><a href="#state">4. 상태 모델</a><a href="#machine">5. 상태 머신</a><a href="#dom">6. DOM 계약</a><a href="#popup">7. 팝업 관리자</a><a href="#round">8. 라운드 구현</a><a href="#ai">9. 동료·집사 AI</a><a href="#api">10. API 계약</a><a href="#db">11. DB 스키마</a><a href="#auth">12. Google 로그인</a><a href="#ranking">13. 기록·랭킹</a><a href="#resume">14. 재개·중복 방지</a><a href="#mobile">15. 모바일 CSS</a><a href="#errors">16. 오류 처리</a><a href="#security">17. 보안</a><a href="#order">18. 구현 순서</a><a href="#tests">19. 테스트</a><a href="#handoff">20. 작업 지시문</a>
@@ -46,8 +46,8 @@
     <h2 id="files">3. 파일·폴더 구조</h2>
     <div class="code tree">D:\soccerstarWebSource\GameCreator\crimeGame\
 ├─ index.html                         # 메인 현황판 + 빈 팝업 루트만
-├─ popup-four-round-mystery-game-plan.html
-├─ popup-four-round-coding-spec.html # 이 문서
+├─ docs/design/popup-four-round-mystery-game-plan.html
+├─ docs/design/popup-four-round-coding-spec.html # 이 문서
 ├─ assets\
 │  ├─ css\game.css                  # 전체 스타일, 모바일 포함
 │  ├─ js\app.js                     # 부팅, 상태 구독, 화면 전환
@@ -531,8 +531,8 @@ IF missing: INSERT attempt; COMMIT; return new attempt state</div>
     </table>
 
     <h2 id="handoff">20. 낮은 모델에 그대로 전달할 작업 지시문</h2>
-    <div class="card strict"><h3>복사 시작</h3><div class="code">D:\soccerstarWebSource\GameCreator\crimeGame\popup-four-round-mystery-game-plan.html 과
-D:\soccerstarWebSource\GameCreator\crimeGame\popup-four-round-coding-spec.html 을 처음부터 끝까지 읽어라.
+    <div class="card strict"><h3>복사 시작</h3><div class="code">D:\soccerstarWebSource\GameCreator\crimeGame\docs\design\popup-four-round-mystery-game-plan.html 과
+D:\soccerstarWebSource\GameCreator\crimeGame\docs\design\popup-four-round-coding-spec.html 을 처음부터 끝까지 읽어라.
 
 목표:
 CASE 01 “마크의 마지막 수리”를 4라운드 중앙 팝업형 웹게임으로 구현한다.

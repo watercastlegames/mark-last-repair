@@ -101,13 +101,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .social-fixed-link:hover{transform:translateY(-3px);border-color:#7e8b98;box-shadow:0 16px 38px #000d}
 .social-fixed-link:active{transform:scale(.96)}
 .social-fixed-link img{display:block;width:30px;height:30px;object-fit:contain}
-.developer-link-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#071423;color:#f1ce73;font:900 9px/1 "Roboto Mono",Consolas,monospace;letter-spacing:.04em}
+.developer-link-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#071423;color:#f1ce73;font:900 19px/1 "Roboto Mono",Consolas,monospace}
 .social-fixed-link span{font-size:11px;font-weight:900;letter-spacing:.02em}
 @media(max-width:700px){
   .social-fixed-link{right:max(9px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:48px;height:48px;min-height:48px;padding:8px;border-radius:50%;overflow:hidden}
   .developer-fixed-link{bottom:max(9px,env(safe-area-inset-bottom))}
   .share-fixed-link{bottom:max(67px,calc(env(safe-area-inset-bottom) + 58px))}
-  .developer-link-mark{flex:0 0 34px;width:34px;height:34px;font-size:10px}
+  .developer-link-mark{flex:0 0 34px;width:34px;height:34px;font-size:21px}
   .social-fixed-link span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 }
 .share-feedback{position:fixed;z-index:140;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 40px);border:1px solid #ffffff40;border-radius:999px;padding:10px 16px;background:#071423f2;color:#fff;font-size:13px;font-weight:800;box-shadow:0 12px 32px #000b;animation:shareFeedbackIn .2s ease-out}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071423">
+  <title>마크의 마지막 수리 · 프로젝트 문서</title>
+  <style>
+    :root{color-scheme:dark;--bg:#06111e;--panel:#0d1d2d;--line:#284059;--gold:#f1ce73;--text:#f4f7fb;--muted:#a9b8c8}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 50% 0,#17314c 0,#06111e 42rem);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+    main{width:min(920px,calc(100% - 32px));margin:0 auto;padding:52px 0 80px}
+    .eyebrow{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.16em}
+    h1{margin:10px 0 12px;font-size:clamp(34px,7vw,64px);line-height:1.05}
+    .lead{max-width:700px;margin:0;color:var(--muted);font-size:16px;line-height:1.75}
+    section{margin-top:34px}
+    h2{font-size:18px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    a.card{display:block;min-height:126px;padding:20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(19,42,64,.94),rgba(8,23,37,.96));color:inherit;text-decoration:none;transition:.18s ease}
+    a.card:hover,a.card:focus-visible{border-color:var(--gold);transform:translateY(-2px);outline:none}
+    .card small{color:var(--gold);font-weight:800}
+    .card b{display:block;margin:8px 0;font-size:19px}
+    .card span{color:var(--muted);font-size:14px;line-height:1.55}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+    .actions a{padding:12px 16px;border:1px solid var(--line);border-radius:999px;color:var(--text);text-decoration:none}
+    @media(max-width:640px){main{width:min(100% - 24px,920px);padding-top:34px}.grid{grid-template-columns:1fr}a.card{min-height:112px}}
+  </style>
+</head>
+<body>
+  <main>
+    <span class="eyebrow">CASE FILE 01 · DOCUMENTS</span>
+    <h1>프로젝트 문서</h1>
+    <p class="lead">게임 기획서, 상세 설계서와 진행 구조 개선 기록을 한곳에 정리했습니다. 초기 서버형 설계는 개발 과정 기록이며 현재 게임은 Firebase와 브라우저 로컬 저장을 사용합니다.</p>
+
+    <section>
+      <h2>기획·설계</h2>
+      <div class="grid">
+        <a class="card" href="design/mark-death-mystery-design.html"><small>PLAN 01</small><b>초기 게임 기획서</b><span>사건 구조, 질문 규칙과 시간 자원 설계</span></a>
+        <a class="card" href="design/mark-death-mystery-detailed-design.html"><small>DESIGN 02</small><b>상세 설계서</b><span>화면 흐름, 동료 시스템과 이미지 제작 계획</span></a>
+        <a class="card" href="design/popup-four-round-mystery-game-plan.html"><small>PLAN 03</small><b>4라운드 팝업형 기획서</b><span>중앙 집중형 단계 진행과 최종 발의 구조</span></a>
+        <a class="card" href="design/popup-four-round-coding-spec.html"><small>SPEC 04</small><b>4라운드 코딩 설계서</b><span>초기 구현 계약을 보관한 개발 과정 문서</span></a>
+        <a class="card" href="design/central-flow-improvement-report.html"><small>REPORT 05</small><b>중앙 진행 개선 보고서</b><span>선택·결과 화면의 몰입도와 모바일 개선안</span></a>
+      </div>
+    </section>
+
+    <div class="actions">
+      <a href="../">게임으로 돌아가기</a>
+      <a href="https://github.com/watercastlegames/mark-last-repair/tree/main/docs" target="_blank" rel="noopener">GitHub 전체 문서</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -72,7 +72,7 @@ python -m http.server 8080
 http://localhost:8080/
 ```
 
-정적 서버만으로도 개인 기록 모드와 Puter AI 기능을 체험할 수 있습니다. Google 로그인과 공용 랭킹을 사용하려면 [Firebase 설정 안내](FIREBASE_SETUP.md)를 따라 별도 프로젝트를 연결하세요.
+정적 서버만으로도 개인 기록 모드와 Puter AI 기능을 체험할 수 있습니다. Google 로그인과 공용 랭킹을 사용하려면 [Firebase 설정 안내](docs/guides/FIREBASE_SETUP.md)를 따라 별도 프로젝트를 연결하세요.
 
 ## 기술 구성
 
@@ -95,9 +95,14 @@ crimeGame/
 │  ├─ js/                     # 사건 데이터, AI, 상태, Firebase, UI
 │  ├─ images/                 # 라운드·결말 이미지와 아이콘
 │  └─ media/                  # GitHub용 플레이 GIF
-├─ docs/images/               # 공개용 플레이 스크린샷
+├─ docs/
+│  ├─ design/                 # 게임 기획서·상세 설계서·개선 보고서
+│  ├─ guides/                 # 테마 제작·Firebase·배포 안내
+│  ├─ images/                 # 공개용 플레이 스크린샷
+│  ├─ project/                # 팬 프로젝트·에셋·공개 범위 안내
+│  └─ release/                # GitHub·Threads 공개 준비 문서
 ├─ firestore.rules            # Firestore 보안 규칙
-└─ CUSTOM_THEME_GUIDE.md      # 새로운 사건 테마 제작 안내
+└─ README.md
 ```
 
 ## 나만의 사건으로 바꾸기
@@ -108,7 +113,7 @@ crimeGame/
 - `assets/js/puter-ai.js`: 동료 성격, 공개 범위, 사건 확정 사실과 질문 판정 규칙
 - `assets/js/final-evaluation.js`: 최종 발의의 정답과 부분정답 기준
 
-구체적인 수정 순서와 AI에게 전달할 바이브코딩 프롬프트는 [새 테마 제작 가이드](CUSTOM_THEME_GUIDE.md)에 정리했습니다.
+구체적인 수정 순서와 AI에게 전달할 바이브코딩 프롬프트는 [새 테마 제작 가이드](docs/guides/CUSTOM_THEME_GUIDE.md)에 정리했습니다.
 
 ## 소스 빌드
 
@@ -128,17 +133,18 @@ npx --yes esbuild assets/js/app-round11.js \
 
 소스 코드는 MIT License로 공개됩니다. 버그 수정, 모바일 개선, 새로운 사건 구조와 문서 보완을 환영합니다.
 
-- [새 테마 제작 가이드](CUSTOM_THEME_GUIDE.md)
+- [문서 전체 목차](docs/README.md)
+- [새 테마 제작 가이드](docs/guides/CUSTOM_THEME_GUIDE.md)
 - [기여 안내](CONTRIBUTING.md)
-- [공개 파일 범위](OPEN_SOURCE_MANIFEST.md)
-- [이미지·아이콘 사용 안내](ASSET_NOTICE.md)
+- [공개 파일 범위](docs/project/OPEN_SOURCE_MANIFEST.md)
+- [이미지·아이콘 사용 안내](docs/project/ASSET_NOTICE.md)
 - [보안 제보 안내](SECURITY.md)
 
 ## 팬 프로젝트 안내
 
 이 프로젝트는 피의게임 X를 재미있게 본 팬이 애정을 담아 만든 비공식 팬게임이며 방송사, 제작진, 출연자와 공식적인 관련이 없습니다. 방송 영상이나 공식 이미지를 사용하지 않으며, 게임 속 인물과 이미지는 가상 설정으로 재구성했습니다.
 
-자세한 내용은 [팬 프로젝트 고지](FAN_PROJECT_NOTICE.md)를 확인하세요.
+자세한 내용은 [팬 프로젝트 고지](docs/project/FAN_PROJECT_NOTICE.md)를 확인하세요.
 
 ## 개발자의 다른 게임
 

@@ -76,7 +76,7 @@ v1.0.0
 
 게임에 사용한 HTML, CSS, JavaScript, AI 프롬프트, 사건 데이터, Firebase 규칙과 선택형 Classic ASP 서버 소스를 공개합니다.
 
-이 소스를 Fork하고 `CUSTOM_THEME_GUIDE.md`를 따라 새로운 사건과 테마를 바이브코딩으로 만들어 보세요.
+이 소스를 Fork하고 `docs/guides/CUSTOM_THEME_GUIDE.md`를 따라 새로운 사건과 테마를 바이브코딩으로 만들어 보세요.
 
 플레이: https://sidak.kr/autodev/GameCreator/crimeGame/
 ```
