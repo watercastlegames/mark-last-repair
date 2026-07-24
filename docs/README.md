@@ -4,13 +4,13 @@
 
 ## 기획·설계
 
-- [초기 게임 기획서](design/mark-death-mystery-design.html)
-- [상세 설계서](design/mark-death-mystery-detailed-design.html)
-- [4라운드 팝업형 게임 기획서](design/popup-four-round-mystery-game-plan.html)
-- [4라운드 코딩 설계서](design/popup-four-round-coding-spec.html)
-- [중앙 집중형 진행 개선 보고서](design/central-flow-improvement-report.html)
+- [현행 통합 게임 기획서](design/popup-four-round-mystery-game-plan.html) — 제품 목표, 4라운드, AI, 시간 자원, 채점과 랭킹의 최종 기준
+- [현행 상세 기능 설계서](design/mark-death-mystery-detailed-design.html) — 메인부터 결과까지 화면·버튼·전환·복구 계약
+- [현행 코딩 설계서](design/popup-four-round-coding-spec.html) — 정적 번들, Puter AI, Firebase와 localStorage 구현 계약
+- [현행 사건 콘텐츠 기획서](design/mark-death-mystery-design.html) — 라운드별 공개 정보, 전체 정답과 결말 자산
+- [중앙 집중형 진행 개선 보고서](design/central-flow-improvement-report.html) — 현재 UX에 이르기까지의 개선 과정 기록
 
-일부 설계 문서는 개발 과정의 초기 서버형 구성을 기록한 자료입니다. 현재 실행 구조는 Firebase Authentication·Cloud Firestore·브라우저 로컬 저장을 사용하며, 실제 동작 기준은 루트 `README.md`와 `assets/js/`입니다.
+위 네 개의 기획·설계 문서는 2026-07-24 배포 버전(`game-round54.bundle.js`, `game.css?v=round55`)을 기준으로 현행화했습니다. 실제 데이터 원본은 루트 `README.md`와 `assets/js/`입니다.
 
 ## 제작·배포 가이드
 

@@ -3,557 +3,320 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>마크의 마지막 수리 · 4라운드 팝업 게임 코딩 설계서</title>
+  <meta name="theme-color" content="#0b1b30">
+  <title>마크의 마지막 수리 · 현행 코딩 설계서</title>
   <style>
-    :root{--bg:#edf2f7;--paper:#fff;--ink:#162437;--muted:#617187;--line:#d7e1eb;--navy:#0b1b30;--blue:#246ea6;--gold:#bd8425;--red:#a33b42;--green:#297151;--violet:#65449a}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 "Noto Sans KR","Malgun Gothic",sans-serif}.page{width:min(1240px,100%);margin:auto;padding:32px 20px 74px}.cover{padding:38px;border-radius:20px;background:linear-gradient(135deg,#08182b,#173d61);color:#fff;box-shadow:0 18px 45px #10233a36}.cover small{color:#efc56b;font-weight:900;letter-spacing:.14em}.cover h1{margin:7px 0 8px;font-size:34px;letter-spacing:-.06em}.cover p{max-width:900px;margin:0;color:#d4e1ed;font-size:16px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.meta span{padding:5px 9px;border:1px solid #ffffff3d;border-radius:99px;font-size:12px}.toc{columns:3;margin:20px 0;padding:18px 25px;border:1px solid var(--line);border-radius:13px;background:#fff}.toc a{display:block;margin:4px 0;color:var(--blue);text-decoration:none}.summary{margin:20px 0;padding:17px 19px;border-left:5px solid var(--gold);border-radius:9px;background:#fff8e7;color:#654b17}h2{margin:44px 0 12px;font-size:24px;letter-spacing:-.04em}h3{margin:20px 0 8px;font-size:17px}.lead{margin:-5px 0 15px;color:var(--muted)}.card{margin:12px 0;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 14px #22384f0c}.warn{margin:12px 0;padding:14px 16px;border-radius:9px;background:#fff0f0;color:#762d32}.good{margin:12px 0;padding:14px 16px;border-radius:9px;background:#e9f5ee;color:#235e44}.info{margin:12px 0;padding:14px 16px;border-radius:9px;background:#e8f2fa;color:#214f72}table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}th,td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#e9f0f6;color:#2b4056;font-size:12px}tr:last-child td{border-bottom:0}code{padding:2px 5px;border-radius:4px;background:#e8eef4;color:#24435f;font:12px/1.5 Consolas,monospace}.code{overflow:auto;margin:10px 0;padding:15px;border-radius:10px;background:#0d1c2d;color:#d8e8f5;font:12px/1.6 Consolas,monospace;white-space:pre}.tree{white-space:pre-wrap}.badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:900;white-space:nowrap}.badge.front{background:#e5f1fb;color:#216598}.badge.asp{background:#eee7fa;color:#604295}.badge.db{background:#e8f5ed;color:#246748}.badge.lock{background:#ffe7e7;color:#92383d}.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.flow div{display:grid;place-items:center;min-height:66px;padding:8px;border-radius:8px;background:#dfe9f3;text-align:center;font-size:12px;font-weight:900}.flow .server{background:#e9e2f5;color:#533a80}.flow .db{background:#dff0e6;color:#215e43}.state-row{display:grid;grid-template-columns:170px 1fr 1fr;gap:8px;margin:6px 0;padding:10px;border-radius:8px;background:#fff}.state-row b{color:var(--blue)}.api{display:grid;grid-template-columns:220px 1fr 1fr;gap:8px;margin:6px 0;padding:10px;border-radius:8px;background:#fff}.api b{color:var(--violet)}.check{padding-left:0;list-style:none}.check li{position:relative;margin:7px 0;padding-left:25px}.check li:before{content:"□";position:absolute;left:0;color:var(--blue);font-size:18px}.strict{border:2px solid #d9a94c}.strict h3{color:#8c6119}.source a{color:#17649c}@media(max-width:900px){.toc{columns:2}.flow{grid-template-columns:repeat(3,1fr)}.state-row,.api{grid-template-columns:1fr}}@media(max-width:650px){.page{padding:16px 11px 50px}.cover{padding:24px 18px}.cover h1{font-size:25px}.toc{columns:1;padding:15px 18px}h2{margin-top:33px;font-size:21px}table{display:block;overflow-x:auto}th,td{min-width:140px;padding:9px;font-size:12px}.flow{grid-template-columns:1fr}.code{font-size:11px}.card{padding:15px}}
+    :root{--bg:#edf2f7;--paper:#fff;--ink:#162437;--muted:#617187;--line:#d7e1eb;--navy:#0b1b30;--blue:#246ea6;--gold:#bd8425;--red:#a33b42;--green:#297151;--violet:#65449a}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 "Noto Sans KR","Malgun Gothic",sans-serif}.page{width:min(1240px,100%);margin:auto;padding:32px 20px 74px}.cover{padding:38px;border-radius:20px;background:linear-gradient(135deg,#08182b,#173d61);color:#fff;box-shadow:0 18px 45px #10233a36}.cover small{color:#efc56b;font-weight:900;letter-spacing:.14em}.cover h1{margin:7px 0 8px;font-size:35px;letter-spacing:-.06em}.cover p{max-width:920px;margin:0;color:#d4e1ed;font-size:16px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.meta span{padding:5px 9px;border:1px solid #ffffff3d;border-radius:99px;font-size:12px}.status{margin:20px 0;padding:17px 19px;border-left:5px solid var(--green);border-radius:9px;background:#e9f5ee;color:#235e44}.toc{columns:3;margin:20px 0;padding:18px 25px;border:1px solid var(--line);border-radius:13px;background:#fff}.toc a{display:block;margin:4px 0;color:var(--blue);text-decoration:none}h2{margin:44px 0 12px;font-size:24px;letter-spacing:-.04em}h3{margin:20px 0 8px;font-size:17px}.lead{margin:-5px 0 15px;color:var(--muted)}.card{margin:12px 0;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 14px #22384f0c}.warn,.good,.info{margin:12px 0;padding:14px 16px;border-radius:9px}.warn{background:#fff0f0;color:#762d32}.good{background:#e9f5ee;color:#235e44}.info{background:#e8f2fa;color:#214f72}table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}th,td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#e9f0f6;color:#2b4056;font-size:12px}tr:last-child td{border-bottom:0}code{padding:2px 5px;border-radius:4px;background:#e8eef4;color:#24435f;font:12px/1.5 Consolas,monospace}.code{overflow:auto;margin:10px 0;padding:15px;border-radius:10px;background:#0d1c2d;color:#d8e8f5;font:12px/1.6 Consolas,monospace;white-space:pre}.tree{white-space:pre-wrap}.badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:900;white-space:nowrap}.badge.ui{background:#e5f1fb;color:#216598}.badge.ai{background:#eee7fa;color:#604295}.badge.cloud{background:#e8f5ed;color:#246748}.badge.local{background:#fff3d9;color:#815c18}.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.flow div{display:grid;place-items:center;min-height:66px;padding:8px;border-radius:8px;background:#dfe9f3;text-align:center;font-size:12px;font-weight:900}.flow .ai{background:#e9e2f5;color:#533a80}.flow .cloud{background:#dff0e6;color:#215e43}.check{padding-left:0;list-style:none}.check li{position:relative;margin:7px 0;padding-left:25px}.check li:before{content:"□";position:absolute;left:0;color:var(--blue);font-size:18px}.linkbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}.linkbar a{padding:10px 13px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--blue);text-decoration:none}@media(max-width:900px){.toc{columns:2}.flow{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.page{padding:16px 11px 50px}.cover{padding:24px 18px}.cover h1{font-size:26px}.toc{columns:1;padding:15px 18px}h2{margin-top:33px;font-size:21px}table{display:block;overflow-x:auto}th,td{min-width:140px;padding:9px;font-size:12px}.flow{grid-template-columns:1fr}.code{font-size:11px}.card{padding:15px}}
   </style>
 </head>
 <body>
   <main class="page">
     <header class="cover">
-      <small>IMPLEMENTATION SPECIFICATION · CASE 01 · VERSION 1.0</small>
-      <h1>4라운드 중앙 팝업형 추리 게임 코딩 설계서</h1>
-      <p>기획 의도를 다시 해석하지 않고 그대로 구현하도록 파일, 상태, 함수, API, 데이터베이스, Google 로그인, Puter AI, 모바일, 테스트 계약을 고정한 실행 문서다.</p>
-      <div class="meta"><span>프런트: HTML/CSS/Vanilla JS ES Modules</span><span>서버: IIS Classic ASP</span><span>DB: Microsoft SQL Server</span><span>인증: Google Identity Services</span><span>AI: Puter.js 어댑터</span></div>
+      <small>CURRENT IMPLEMENTATION SPEC · CASE 01 · 2026-07-24</small>
+      <h1>4라운드 중앙 팝업형 추리 게임<br>현행 코딩 설계서</h1>
+      <p>배포 중인 코드의 아키텍처, 파일 책임, 상태 머신, Puter AI 계약, Firebase 기록, localStorage 복구, 모바일 렌더링과 빌드 절차를 구현 그대로 설명한다.</p>
+      <div class="meta"><span>HTML/CSS/Vanilla JS</span><span>ES Module Source → IIFE Bundle</span><span>Puter.js AI Chat</span><span>Firebase 12.16.0</span><span>Google Auth</span><span>Cloud Firestore</span></div>
     </header>
-    <section class="summary"><b>개발 과정 보관 문서</b><br>이 문서는 초기 서버형 설계를 기록한 자료다. 현재 실행 버전은 Firebase·브라우저 로컬 저장 구조를 사용하며, 실제 구현은 루트 <code>README.md</code>와 <code>assets/js</code>를 기준으로 확인한다.</section>
+    <section class="status"><b>현행 기준</b><br>Classic ASP API, MSSQL, 서버 세션, Google Identity Services 직접 토큰 검증 구조는 제거됐다. 런타임은 정적 파일만 배포하며 AI는 Puter.js, 공식 기록은 Firebase Authentication과 Firestore를 사용한다.</section>
 
     <nav class="toc">
-      <a href="#scope">1. 범위와 고정 결정</a><a href="#architecture">2. 아키텍처</a><a href="#files">3. 파일 구조</a><a href="#state">4. 상태 모델</a><a href="#machine">5. 상태 머신</a><a href="#dom">6. DOM 계약</a><a href="#popup">7. 팝업 관리자</a><a href="#round">8. 라운드 구현</a><a href="#ai">9. 동료·집사 AI</a><a href="#api">10. API 계약</a><a href="#db">11. DB 스키마</a><a href="#auth">12. Google 로그인</a><a href="#ranking">13. 기록·랭킹</a><a href="#resume">14. 재개·중복 방지</a><a href="#mobile">15. 모바일 CSS</a><a href="#errors">16. 오류 처리</a><a href="#security">17. 보안</a><a href="#order">18. 구현 순서</a><a href="#tests">19. 테스트</a><a href="#handoff">20. 작업 지시문</a>
+      <a href="#architecture">1. 아키텍처</a><a href="#runtime">2. 런타임 진입점</a><a href="#files">3. 파일 책임</a><a href="#state">4. 상태 모델</a><a href="#machine">5. 상태 머신</a><a href="#popup">6. 팝업 계약</a><a href="#round">7. 라운드 로직</a><a href="#timer">8. 타이머</a><a href="#ai">9. Puter AI</a><a href="#question">10. 집사 판정</a><a href="#final">11. 최종 발의</a><a href="#firebase">12. Firebase</a><a href="#storage">13. 로컬 저장</a><a href="#mobile">14. 모바일 CSS</a><a href="#errors">15. 오류·복구</a><a href="#build">16. 빌드·배포</a><a href="#tests">17. 검수</a>
     </nav>
 
-    <h2 id="scope">1. 범위와 고정 결정</h2>
-    <table>
-      <thead><tr><th>항목</th><th>고정 결정</th><th>구현 모델이 임의 변경하면 안 되는 것</th></tr></thead>
-      <tbody>
-        <tr><td>게임 수</td><td>CASE 01 “마크의 마지막 수리” 한 사건</td><td>새 사건·새 범인·새 규칙 추가 금지</td></tr>
-        <tr><td>라운드</td><td>정확히 4라운드</td><td>라운드 합치기·삭제 금지</td></tr>
-        <tr><td>라운드 구성</td><td>그림 1장 → 단서 3개 → 동료 의견 → 질문 1~3개 → 요약</td><td>질문 전에 다음 그림 공개 금지</td></tr>
-        <tr><td>진행 화면</td><td>모든 선택·결과는 중앙 팝업</td><td>좌우 패널에서 직접 진행 금지</td></tr>
-        <tr><td>최종 단계</td><td>ROUND 4 뒤 정답 발의, 전체 내막, 개인 결과, 랭킹</td><td>오답자에게 해설 차단 금지</td></tr>
-        <tr><td>질문 답변</td><td>허용 문장 네 개만</td><td>짧은 설명도 추가 금지</td></tr>
-        <tr><td>로그인</td><td>Google 로그인 필수</td><td>이메일 문자열만 받아 인증 처리 금지</td></tr>
-        <tr><td>재도전</td><td>동일 Google 사용자 + 동일 사건은 완료 후 재도전 불가</td><td>localStorage만으로 차단 금지</td></tr>
-        <tr><td>공식 기록</td><td>서버 시간·서버 질문 이벤트 기준</td><td>브라우저 타이머 값을 공식 기록으로 저장 금지</td></tr>
-      </tbody>
-    </table>
+    <h2 id="architecture">1. 현행 아키텍처</h2>
+    <div class="flow"><div>index.html<br>정적 진입점</div><div>game.css<br>반응형 UI</div><div>game-round54.bundle.js<br>IIFE 런타임</div><div class="ai">Puter.js<br>AI Chat</div><div class="cloud">Firebase Auth<br>Google Popup</div><div class="cloud">Cloud Firestore<br>공식 랭킹</div></div>
+    <div class="card">
+      <p><span class="badge ui">브라우저 UI</span> 진행 상태, 팝업, 타이머, 질문·최종 입력, 채점과 기록 화면을 담당한다.</p>
+      <p><span class="badge ai">Puter AI</span> 동료 추천 질문·최종 발의 가설·집사 4분류 판정을 생성한다.</p>
+      <p><span class="badge local">localStorage</span> 플레이 중인 사건 전체 상태와 이 기기의 최고 기록을 저장한다.</p>
+      <p><span class="badge cloud">Firebase</span> 결과 화면 이후 선택적으로 Google 로그인하고 UID당 공식 기록 한 건을 생성하며 공개 랭킹을 읽는다.</p>
+    </div>
+    <div class="warn"><b>보안 경계:</b> 게임 진행과 점수 계산은 클라이언트에서 수행한다. Firestore 규칙은 타입·범위·UID·1회 생성만 검증하며 서버 권위 타이머나 정답 재계산은 하지 않는다. 공식 랭킹은 팬게임용 기록으로 간주한다.</div>
 
-    <h2 id="architecture">2. 아키텍처</h2>
-    <div class="flow"><div>브라우저<br>index.html</div><div>ES Module<br>app.js</div><div>Puter.js<br>AI 어댑터</div><div class="server">Classic ASP<br>JSON API</div><div class="db">MSSQL<br>시도·이벤트</div><div>Google GIS<br>ID 토큰</div></div>
-    <div class="card"><h3>책임 분리</h3><p><span class="badge front">브라우저</span> 팝업 표시, 입력, 애니메이션, Puter 호출, 서버 상태 렌더링을 담당한다.</p><p><span class="badge asp">Classic ASP</span> 로그인 세션, 시도 1회 제한, 상태 전이 검증, 질문 횟수·페널티, 최종 판정, 공식 기록을 담당한다.</p><p><span class="badge db">MSSQL</span> 사용자, 사건, 시도, 이벤트, 질문, 동료 의견, 최종 결과를 영구 저장한다.</p></div>
-    <div class="warn"><b>신뢰 경계:</b> 브라우저가 보내는 <code>roundNo</code>, 질문 수, 시간, 해결 여부를 그대로 믿지 않는다. API는 DB의 현재 상태를 읽고 다음 행동이 가능한지 다시 계산한다.</div>
-
-    <h2 id="files">3. 파일·폴더 구조</h2>
-    <div class="code tree">D:\soccerstarWebSource\GameCreator\crimeGame\
-├─ index.html                         # 메인 현황판 + 빈 팝업 루트만
-├─ docs/design/popup-four-round-mystery-game-plan.html
-├─ docs/design/popup-four-round-coding-spec.html # 이 문서
-├─ assets\
-│  ├─ css\game.css                  # 전체 스타일, 모바일 포함
-│  ├─ js\app.js                     # 부팅, 상태 구독, 화면 전환
-│  ├─ js\state.js                   # 단일 클라이언트 상태 저장소
-│  ├─ js\api.js                     # fetch 래퍼, ASP API 계약
-│  ├─ js\popup.js                   # 중앙 팝업 관리자
-│  ├─ js\renderers.js               # 팝업 종류별 렌더러
-│  ├─ js\puter-ai.js                # Puter AI 호출·검증·폴백
-│  ├─ js\history.js                 # 사건 기록 탭
-│  ├─ images\round-01-electrical-room.webp
-│  ├─ images\round-02-mark-work.webp
-│  ├─ images\round-03-dressing-room.webp
-│  ├─ images\round-04-archive.webp
-│  ├─ images\ending-01.webp ... ending-04.webp
-│  └─ images\companion-*.webp
-├─ api\
-│  ├─ auth_google.asp                # ID 토큰 검증 후 Session 생성
-│  ├─ auth_status.asp                # 로그인 상태
-│  ├─ logout.asp
-│  ├─ attempt_start.asp              # 생성·재개·완료 차단
-│  ├─ attempt_state.asp              # 서버 권위 상태 반환
-│  ├─ clue_open.asp                  # 단서 확인
-│  ├─ companion_hint.asp             # 의견 저장·재사용
-│  ├─ question_reserve.asp           # 질문 횟수·+1분 선반영
-│  ├─ question_commit.asp            # Puter 결과 저장
-│  ├─ round_advance.asp              # 다음 라운드 전이
-│  ├─ final_submit.asp               # 최종 판정·완료
-│  └─ rankings.asp                   # 상위 100 + 내 순위
-├─ inc\
-│  ├─ db.asp                         # ADODB 연결
-│  ├─ json.asp                       # JSON escape/응답/본문 읽기
-│  ├─ auth.asp                       # Session 검사
-│  ├─ case_mark_v1.asp               # 서버 전용 정답·라운드 규칙
-│  ├─ state_guard.asp                # 허용 상태 전이 검증
-│  └─ google_verify.asp              # 아래 로컬 검증 서비스 호출
-├─ auth-service\
-│  ├─ google_verify.py               # google-auth 기반 RS256 검증
-│  ├─ requirements.txt               # google-auth, flask, waitress
-│  ├─ run_auth_service.ps1           # 127.0.0.1 전용 실행
-│  └─ README.md                       # 환경변수·서비스 등록 절차
-└─ sql\
-   ├─ 001_crime_game_schema.sql
-   └─ 002_case_mark_v1_seed.sql</div>
-    <div class="info"><b>배포 대상:</b> 로컬 루트의 같은 상대 경로를 서버 <code>C:\Service\soccerstar\web\autoDev\GameCreator\crimeGame</code> 아래에 배포한다. 공개 URL 기준 루트는 <code>/autodev/GameCreator/crimeGame/</code>이다.</div>
-
-    <h2 id="state">4. 클라이언트 단일 상태 모델</h2>
-    <p class="lead">전역 변수를 흩어놓지 말고 <code>state.js</code>의 한 객체만 사용한다. 서버 응답으로 덮어쓰며, 공식 기록은 이 객체를 신뢰하지 않는다.</p>
-    <div class="code">export const initialState = {
-  auth: { status: 'unknown', user: null },
-  case: { id: null, slug: 'mark-last-repair-v1', title: '', locked: false },
-  attempt: {
-    id: null,
-    status: 'not_started',          // not_started | in_progress | completed
-    phase: 'AUTH_REQUIRED',
-    roundNo: 0,                    // 0~4
-    clueCount: 0,                  // 현재 라운드 0~3
-    questionCount: 0,              // 현재 라운드 0~3
-    totalQuestions: 0,             // 전체 0~12
-    penaltyMs: 0,
-    serverStartedAt: null,
-    serverNow: null,
-    solved: null
-  },
-  round: {
-    image: null,
-    publicSummary: '',
-    clues: [],                      // 공개된 단서만
-    companions: [],                // 서버에 저장된 의견만
-    questions: []                  // 완료된 질문/판정
-  },
-  ui: {
-    popup: null,
-    popupPayload: null,
-    busy: false,
-    error: null,
-    historyTab: 'overview'
-  }
-};</div>
-    <table>
-      <thead><tr><th>규칙</th><th>구현 방법</th></tr></thead>
-      <tbody>
-        <tr><td>상태 변경</td><td><code>dispatch(action)</code>만 사용한다. UI 코드에서 state 필드를 직접 변경하지 않는다.</td></tr>
-        <tr><td>렌더링</td><td><code>subscribe(renderApp)</code> 하나로 메인 HUD와 현재 팝업을 다시 그린다.</td></tr>
-        <tr><td>서버 동기화</td><td>변경 API 성공 후 응답의 <code>attempt</code>와 <code>round</code>를 그대로 적용한다.</td></tr>
-        <tr><td>새로고침</td><td><code>GET attempt_state.asp</code>로 복구하며 localStorage 복원은 사용하지 않는다.</td></tr>
-      </tbody>
-    </table>
-
-    <h2 id="machine">5. 서버 권위 상태 머신</h2>
-    <div class="state-row"><b>AUTH_REQUIRED</b><span>Google 미로그인</span><span>성공 → CASE_HOME</span></div>
-    <div class="state-row"><b>CASE_HOME</b><span>시도 없음 또는 진행 중 사건 현황</span><span>시작/계속 → ROUND_INTRO</span></div>
-    <div class="state-row"><b>ROUND_INTRO</b><span>다음 라운드 안내 팝업</span><span>확인 → IMAGE_REVEAL</span></div>
-    <div class="state-row"><b>IMAGE_REVEAL</b><span>현재 라운드 그림 공개</span><span>조사 시작 → CLUE_SELECT</span></div>
-    <div class="state-row"><b>CLUE_SELECT</b><span>미확인 단서 선택</span><span>선택 → CLUE_RESULT</span></div>
-    <div class="state-row"><b>CLUE_RESULT</b><span>단서 한 문장 결과</span><span>3개 미만 → CLUE_SELECT, 3개 → COMPANION_SELECT</span></div>
-    <div class="state-row"><b>COMPANION_SELECT</b><span>동료 선택·재열람</span><span>의견 확인 → COMPANION_RESULT</span></div>
-    <div class="state-row"><b>COMPANION_RESULT</b><span>말풍선 + 추천 질문</span><span>질문 사용/직접 질문 → QUESTION_SELECT</span></div>
-    <div class="state-row"><b>QUESTION_SELECT</b><span>추천 질문 또는 직접 입력</span><span>문장 선택 → QUESTION_CONFIRM</span></div>
-    <div class="state-row"><b>QUESTION_CONFIRM</b><span>문장·+1분 비용 확인</span><span>확정 → QUESTION_PENDING</span></div>
-    <div class="state-row"><b>QUESTION_PENDING</b><span>서버 질문 슬롯 예약, Puter 호출 중</span><span>성공 → QUESTION_RESULT</span></div>
-    <div class="state-row"><b>QUESTION_RESULT</b><span>허용 답변 한 문장</span><span>3개 미만 → QUESTION_SELECT, 3개 → ROUND_SUMMARY</span></div>
-    <div class="state-row"><b>ROUND_SUMMARY</b><span>라운드 획득 정보 요약</span><span>1~3R → 다음 ROUND_INTRO, 4R → FINAL_INTRO</span></div>
-    <div class="state-row"><b>FINAL_ANSWER</b><span>6개 정답 항목 입력</span><span>제출 → ENDING_STORY</span></div>
-    <div class="state-row"><b>ENDING_STORY</b><span>그림 4장 전체 내막</span><span>완료 → RESULT</span></div>
-    <div class="state-row"><b>RESULT</b><span>개인 기록</span><span>랭킹 보기 → RANKING</span></div>
-    <div class="warn"><b>직접 점프 차단:</b> 클라이언트가 <code>roundNo=4</code>나 <code>phase=FINAL_ANSWER</code>를 보내도 서버는 DB의 현재 phase와 완료 조건을 사용한다.</div>
-
-    <h2 id="dom">6. index.html DOM 계약</h2>
-    <p class="lead">HTML에는 게임 콘텐츠를 하드코딩하지 않는다. 낮은 모델은 아래 ID를 정확히 한 번씩 생성한다.</p>
-    <div class="code">&lt;body&gt;
-  &lt;div id="app"&gt;
-    &lt;header id="gameHud"&gt;
-      &lt;span id="hudRound"&gt;&lt;/span&gt;
-      &lt;span id="hudTime"&gt;&lt;/span&gt;
-      &lt;span id="hudQuestions"&gt;&lt;/span&gt;
-      &lt;button id="historyButton"&gt;사건 기록&lt;/button&gt;
-      &lt;div id="googleButtonSlot"&gt;&lt;/div&gt;
-    &lt;/header&gt;
-    &lt;main id="caseDashboard"&gt;&lt;/main&gt;
-  &lt;/div&gt;
-  &lt;div id="popupRoot" aria-live="polite"&gt;&lt;/div&gt;
-  &lt;div id="toastRoot" aria-live="assertive"&gt;&lt;/div&gt;
-&lt;/body&gt;</div>
-    <table>
-      <thead><tr><th>ID</th><th>책임</th><th>주의</th></tr></thead>
-      <tbody>
-        <tr><td><code>gameHud</code></td><td>라운드·공식 예상 시간·질문 수·로그인 상태</td><td>진행 버튼을 두지 않는다.</td></tr>
-        <tr><td><code>caseDashboard</code></td><td>사건 소개와 4라운드 진행도</td><td>실제 선택지는 두지 않는다.</td></tr>
-        <tr><td><code>popupRoot</code></td><td>모든 진행·선택·결과 팝업 단일 마운트</td><td>동시에 팝업 하나만.</td></tr>
-        <tr><td><code>toastRoot</code></td><td>네트워크 오류·저장 완료 등 비진행 알림</td><td>중요 결과를 토스트로 표시하지 않는다.</td></tr>
-      </tbody>
-    </table>
-
-    <h2 id="popup">7. popup.js 계약</h2>
-    <div class="code">export const Popup = {
-  open({ type, title, bodyHtml, primary, secondary = [], dismissible = false }),
-  replace(nextConfig),
-  setBusy(isBusy, message = '처리 중입니다…'),
-  close({ restoreFocus = true } = {}),
-  confirm({ title, message, confirmText, cancelText }), // Promise&lt;boolean&gt;
-  isOpen()
-};</div>
-    <table>
-      <thead><tr><th>필수 동작</th><th>구현 기준</th></tr></thead>
-      <tbody>
-        <tr><td>배경 잠금</td><td>열 때 <code>body.popup-open</code>, 닫을 때 제거. 배경 클릭·스크롤 차단.</td></tr>
-        <tr><td>포커스</td><td>열 때 제목 또는 첫 행동 버튼으로 이동. Tab을 팝업 안에 가둔다.</td></tr>
-        <tr><td>ESC</td><td><code>dismissible=false</code>인 진행 팝업은 ESC로 닫히지 않는다.</td></tr>
-        <tr><td>중복 클릭</td><td>API 요청 시작 즉시 모든 행동 버튼 disabled. 완료 후 한 번만 복구.</td></tr>
-        <tr><td>교체</td><td>진행 중에는 닫고 다시 열지 말고 <code>replace()</code>로 중앙 내용을 전환.</td></tr>
-        <tr><td>모바일</td><td><code>100dvh</code> 기준, safe-area inset 반영, 내부만 스크롤.</td></tr>
-      </tbody>
-    </table>
-    <div class="strict card"><h3>팝업 타입 상수</h3><p><code>LOGIN</code>, <code>CASE_START</code>, <code>ROUND_INTRO</code>, <code>IMAGE</code>, <code>CLUE_SELECT</code>, <code>CLUE_RESULT</code>, <code>COMPANION_SELECT</code>, <code>COMPANION_RESULT</code>, <code>QUESTION_SELECT</code>, <code>QUESTION_CONFIRM</code>, <code>QUESTION_PENDING</code>, <code>QUESTION_RESULT</code>, <code>ROUND_SUMMARY</code>, <code>FINAL_ANSWER</code>, <code>ENDING_STORY</code>, <code>RESULT</code>, <code>RANKING</code>, <code>HISTORY</code>.</p></div>
-
-    <h2 id="round">8. 4라운드 구현 데이터</h2>
-    <table>
-      <thead><tr><th>라운드</th><th>이미지</th><th>단서 ID 3개</th><th>질문 범위</th><th>완료 조건</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td><code>round-01-electrical-room.webp</code></td><td><code>r1_breaker</code>, <code>r1_water</code>, <code>r1_toolbag</code></td><td>발견 현장·사망 형태</td><td>단서 3 + 질문 1~3</td></tr>
-        <tr><td>2</td><td><code>round-02-mark-work.webp</code></td><td><code>r2_glove</code>, <code>r2_schedule</code>, <code>r2_key</code></td><td>마크의 행동·작업 흔적</td><td>단서 3 + 질문 1~3</td></tr>
-        <tr><td>3</td><td><code>round-03-dressing-room.webp</code></td><td><code>r3_spray</code>, <code>r3_residue</code>, <code>r3_ticket</code></td><td>인위적 조작 가능성</td><td>단서 3 + 질문 1~3</td></tr>
-        <tr><td>4</td><td><code>round-04-archive.webp</code></td><td><code>r4_news</code>, <code>r4_gold_list</code>, <code>r4_connection</code></td><td>과거 사건·동기·인물 연결</td><td>단서 3 + 질문 1~3</td></tr>
-      </tbody>
-    </table>
-    <h3>라운드 렌더 함수</h3>
-    <div class="code">renderRoundIntro(state)
-renderImagePopup(roundPublicData)
-renderClueSelect(roundPublicData, openedClueIds)
-renderClueResult(openedClue)
-renderCompanionSelect(companions, storedHints)
-renderCompanionResult(storedHint)
-renderQuestionSelect(suggestions, remainingCount)
-renderQuestionConfirm(questionText, penaltyMs = 60000)
-renderQuestionResult(answerCategory)
-renderRoundSummary(roundState)</div>
-    <div class="good"><b>멱등 규칙:</b> 이미 연 단서나 이미 들은 동료를 다시 누르면 서버는 기존 레코드를 반환한다. 단서 수, 질문 수, 시간 비용은 증가시키지 않는다.</div>
-
-    <h2 id="ai">9. Puter AI 어댑터와 프롬프트 계약</h2>
-    <h3>9.1 동료 의견</h3>
-    <div class="code">SYSTEM:
-너는 비공식 팬메이드 추리 게임의 동료 조력자다.
-실제 인물의 말투를 모사하지 말고 제공된 게임용 페르소나만 반영한다.
-CURRENT_PUBLIC_FACTS 밖의 인물, 사건, 숫자, 도구, 정답을 언급하지 마라.
-집사에게 입력 가능한 예/아니요 질문 하나를 제안하라.
-출력 JSON: {"question":"...습니까?","comment":"...라고 물어보자."}
-question 45자 이하, comment 80자 이하.
-
-USER:
-ROUND_NO, PERSONA, CURRENT_PUBLIC_FACTS, PREVIOUS_QUESTIONS</div>
-    <p>응답 후 <code>validateCompanionOutput()</code>에서 JSON 형태, 길이, 질문 부호, 현재 라운드 금지 키워드를 검사한다. 실패하면 라운드별 고정 폴백 문장을 사용한다.</p>
-    <h3>9.2 집사 판정</h3>
-    <div class="code">SYSTEM:
-너는 추리 게임 집사다.
-CASE_FACTS와 CURRENT_REVEAL_SCOPE를 기준으로 사용자 질문을 판정한다.
-정확히 다음 JSON만 출력한다.
-{"answer":"YES|NO|MAYBE|IRRELEVANT"}
-이유, 설명, 인사, 추가 필드 금지.
-
-클라이언트 표시 매핑:
-YES         → 네, 그렇습니다.
-NO          → 아니요, 그렇지 않습니다.
-MAYBE       → 그럴 수도 있습니다.
-IRRELEVANT  → 중요하지 않습니다.</div>
-    <div class="warn"><b>공식 기록 주의:</b> Puter 호출은 브라우저에서 수행되므로 응답 자체를 보안 판정 근거로 쓰지 않는다. 서버는 질문 슬롯과 페널티를 먼저 예약하고 최종 정답은 서버 정답 데이터로 별도 판정한다. Puter 응답 변조가 공식 시간·질문 수·최종 정답 판정을 바꿀 수 없어야 한다.</div>
-    <h3>9.3 질문 2단계 저장</h3>
-    <ol><li><code>question_reserve.asp</code>: 질문 문장을 저장하고 질문 번호·+60초를 확정, <code>questionId</code> 반환.</li><li>브라우저: Puter AI 호출 후 네 허용 카테고리 중 하나로 정규화.</li><li><code>question_commit.asp</code>: <code>questionId</code>와 카테고리 저장. 이미 commit됐으면 기존 결과 반환.</li><li>Puter 실패 시 로컬 폴백 판정 후 <code>source="fallback"</code> 저장.</li></ol>
-
-    <h2 id="api">10. Classic ASP JSON API 계약</h2>
-    <div class="info">모든 API는 UTF-8 JSON, <code>Cache-Control: no-store</code>, 성공 시 HTTP 200, 인증 실패 401, 전이 충돌 409, 검증 실패 422, 과다 요청 429, 서버 오류 500을 사용한다.</div>
-    <h3>공통 성공/오류 형식</h3>
-    <div class="code">성공: { "ok": true, "data": { ... }, "serverNow": "2026-07-22T15:03:10+09:00" }
-오류: { "ok": false, "error": { "code": "PHASE_CONFLICT", "message": "현재 단계에서 실행할 수 없습니다." } }</div>
-    <div class="api"><b>POST auth_google.asp</b><span>입력: <code>{credential}</code></span><span>출력: <code>{user, attemptSummary}</code></span></div>
-    <div class="api"><b>GET auth_status.asp</b><span>입력 없음</span><span>출력: <code>{authenticated,user}</code></span></div>
-    <div class="api"><b>POST attempt_start.asp</b><span><code>{caseSlug}</code></span><span>신규/재개/완료 잠금 상태</span></div>
-    <div class="api"><b>GET attempt_state.asp</b><span><code>?case=mark-last-repair-v1</code></span><span>현재 phase와 공개 데이터만</span></div>
-    <div class="api"><b>POST clue_open.asp</b><span><code>{attemptId,roundNo,clueId}</code></span><span>단서 결과 + 갱신 상태</span></div>
-    <div class="api"><b>POST companion_hint.asp</b><span><code>{attemptId,roundNo,companionId,hintJson}</code></span><span>신규 저장 또는 기존 의견</span></div>
-    <div class="api"><b>POST question_reserve.asp</b><span><code>{attemptId,roundNo,text,sourceCompanionId?}</code></span><span><code>{questionId,questionNo,penaltyMs}</code></span></div>
-    <div class="api"><b>POST question_commit.asp</b><span><code>{questionId,answerCategory,source}</code></span><span>표시 답변 + 다음 phase</span></div>
-    <div class="api"><b>POST round_advance.asp</b><span><code>{attemptId,roundNo}</code></span><span>다음 라운드 공개 정보 또는 FINAL_INTRO</span></div>
-    <div class="api"><b>POST final_submit.asp</b><span><code>{attemptId,answers:{...}}</code></span><span>해결 여부, 공식 기록, endingStory</span></div>
-    <div class="api"><b>GET rankings.asp</b><span><code>?case=mark-last-repair-v1&amp;limit=100</code></span><span>상위 목록 + 내 순위</span></div>
-    <h3>question_reserve.asp 필수 서버 검증 순서</h3>
-    <ol><li>로그인 Session 확인.</li><li>attempt 소유자와 <code>status='in_progress'</code> 확인.</li><li>DB의 <code>current_round</code>와 요청 round 일치 확인.</li><li>단서 3개 확인 여부 확인.</li><li>현재 라운드 완료 질문 수가 3 미만인지 확인.</li><li>질문 1~120자, 빈 문자열·HTML 태그 제거.</li><li>트랜잭션 안에서 question insert, attempt penalty +60000, event insert.</li><li>서버가 계산한 questionNo와 penaltyMs 반환.</li></ol>
-
-    <h2 id="db">11. MSSQL 스키마</h2>
-    <p class="lead"><code>sql/001_crime_game_schema.sql</code>에 아래 구조를 작성한다. 실제 제약 이름까지 고정한다.</p>
-    <div class="code">CREATE TABLE CrimeUsers (
-  user_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  google_sub VARCHAR(64) NOT NULL,
-  display_name NVARCHAR(80) NOT NULL,
-  avatar_url NVARCHAR(500) NULL,
-  created_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  CONSTRAINT UQ_CrimeUsers_GoogleSub UNIQUE (google_sub)
-);
-
-CREATE TABLE CrimeCases (
-  case_id INT IDENTITY(1,1) PRIMARY KEY,
-  slug VARCHAR(80) NOT NULL,
-  version_no INT NOT NULL,
-  title NVARCHAR(120) NOT NULL,
-  is_active BIT NOT NULL DEFAULT 1,
-  CONSTRAINT UQ_CrimeCases_SlugVersion UNIQUE (slug, version_no)
-);
-
-CREATE TABLE CrimeAttempts (
-  attempt_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  user_id BIGINT NOT NULL,
-  case_id INT NOT NULL,
-  status VARCHAR(20) NOT NULL DEFAULT 'in_progress',
-  phase VARCHAR(40) NOT NULL DEFAULT 'ROUND_INTRO',
-  current_round TINYINT NOT NULL DEFAULT 1,
-  penalty_ms INT NOT NULL DEFAULT 0,
-  questions_used TINYINT NOT NULL DEFAULT 0,
-  solved BIT NULL,
-  started_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  completed_at DATETIME2 NULL,
-  official_time_ms BIGINT NULL,
-  CONSTRAINT FK_CrimeAttempts_User FOREIGN KEY(user_id) REFERENCES CrimeUsers(user_id),
-  CONSTRAINT FK_CrimeAttempts_Case FOREIGN KEY(case_id) REFERENCES CrimeCases(case_id),
-  CONSTRAINT UQ_CrimeAttempts_UserCase UNIQUE(user_id, case_id),
-  CONSTRAINT CK_CrimeAttempts_Round CHECK(current_round BETWEEN 1 AND 4)
-);
-
-CREATE TABLE CrimeAttemptEvents (
-  event_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  attempt_id BIGINT NOT NULL,
-  seq_no INT NOT NULL,
-  event_type VARCHAR(40) NOT NULL,
-  round_no TINYINT NULL,
-  payload_json NVARCHAR(MAX) NULL,
-  server_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  CONSTRAINT FK_CrimeEvents_Attempt FOREIGN KEY(attempt_id) REFERENCES CrimeAttempts(attempt_id),
-  CONSTRAINT UQ_CrimeEvents_Seq UNIQUE(attempt_id, seq_no)
-);
-
-CREATE TABLE CrimeOpenedClues (
-  attempt_id BIGINT NOT NULL,
-  round_no TINYINT NOT NULL,
-  clue_id VARCHAR(40) NOT NULL,
-  opened_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  PRIMARY KEY(attempt_id, round_no, clue_id)
-);
-
-CREATE TABLE CrimeCompanionHints (
-  attempt_id BIGINT NOT NULL,
-  round_no TINYINT NOT NULL,
-  companion_id VARCHAR(30) NOT NULL,
-  comment_text NVARCHAR(300) NOT NULL,
-  question_text NVARCHAR(150) NOT NULL,
-  created_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  PRIMARY KEY(attempt_id, round_no, companion_id)
-);
-
-CREATE TABLE CrimeQuestions (
-  question_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  attempt_id BIGINT NOT NULL,
-  round_no TINYINT NOT NULL,
-  question_no TINYINT NOT NULL,
-  question_text NVARCHAR(150) NOT NULL,
-  answer_category VARCHAR(20) NULL,
-  answer_source VARCHAR(20) NULL,
-  penalty_ms INT NOT NULL DEFAULT 60000,
-  reserved_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-  committed_at DATETIME2 NULL,
-  CONSTRAINT UQ_CrimeQuestions_RoundNo UNIQUE(attempt_id, round_no, question_no)
-);
-
-CREATE TABLE CrimeFinalAnswers (
-  attempt_id BIGINT PRIMARY KEY,
-  answer_json NVARCHAR(MAX) NOT NULL,
-  solved BIT NOT NULL,
-  submitted_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
-);</div>
-    <div class="warn"><b>DB 연결 설정:</b> 소스에 연결 문자열을 쓰지 않는다. IIS Application 값 <code>crimeGame_ConnectionString</code>을 사용하며, 값이 없으면 API가 <code>CONFIG_MISSING</code>으로 종료해야 한다.</div>
-
-    <h2 id="auth">12. Google Identity Services 구현</h2>
+    <h2 id="runtime">2. 런타임 진입점과 로드 순서</h2>
+    <div class="code">&lt;link rel="stylesheet" href="assets/css/game.css?v=round55"&gt;
+&lt;script src="assets/js/firebase-config.js?v=round45"&gt;&lt;/script&gt;
+&lt;script defer src="assets/js/game-round54.bundle.js?v=round54"&gt;&lt;/script&gt;
+&lt;script defer src="assets/js/social-share.js?v=round49"&gt;&lt;/script&gt;</div>
     <ol>
-      <li><code>https://accounts.google.com/gsi/client</code>를 async 로드한다.</li>
-      <li>서버 설정에서 전달받은 Web Client ID로 Google 공식 버튼을 렌더링한다.</li>
-      <li>콜백의 <code>credential</code>을 <code>auth_google.asp</code>에 HTTPS POST한다.</li>
-      <li><code>auth_google.asp</code>가 토큰을 외부에 공개하지 않고 <code>127.0.0.1:8765/verify</code> 로컬 검증 서비스에 전달한다.</li>
-      <li>Python <code>google-auth</code>가 토큰 서명과 <code>aud</code>, <code>iss</code>, <code>exp</code>를 검증한다.</li>
-      <li>검증된 <code>sub</code>만 사용자 고유 키로 저장하고, 이메일은 랭킹 식별키로 사용하지 않는다.</li>
-      <li><code>Session("crime_user_id")</code>, <code>Session("crime_google_sub")</code>를 설정한다.</li>
+      <li><code>firebase-config.js</code>가 <code>window.CRIME_FIREBASE_CONFIG</code>를 등록한다.</li>
+      <li>번들이 상태·사건 데이터·팝업·AI·Firebase 모듈을 포함한 IIFE로 실행된다.</li>
+      <li><code>boot()</code>가 HUD 이벤트를 연결하고 Puter 스크립트 로드를 시작한 뒤 localStorage를 복구한다.</li>
+      <li><code>loadLeader()</code>가 로컬 최고 기록을 먼저 읽고, Firebase가 유효하면 공식 1위로 교체한다.</li>
+      <li>대시보드를 렌더링하고 복구 상태가 있으면 해당 phase 팝업을 즉시 다시 연다.</li>
+      <li><code>setInterval(renderHud, 1000)</code>이 HUD와 팝업 미니 타이머를 매초 갱신한다.</li>
     </ol>
-    <div class="code">// 브라우저 콜백 계약
-window.handleGoogleCredential = async ({ credential }) =&gt; {
-  Popup.setBusy(true, 'Google 계정을 확인하고 있습니다…');
-  const data = await api.post('api/auth_google.asp', { credential });
-    dispatch({ type: 'AUTH_SUCCESS', payload: data });
-    await bootstrapAttempt();
-};</div>
-    <h3>12.1 로컬 Google 검증 서비스 계약</h3>
-    <div class="code"># google_verify.py 핵심 계약 — 구현 시 google.oauth2.id_token 사용
-POST http://127.0.0.1:8765/verify
-Header: X-Internal-Key: 서버 환경변수 CRIME_AUTH_INTERNAL_KEY
-Body: {"credential":"Google ID token"}
 
-성공 200:
-{"ok":true,"claims":{"sub":"...","name":"...","picture":"...","email_verified":true}}
+    <h2 id="files">3. 파일·폴더와 책임</h2>
+    <div class="code tree">D:\soccerstarWebSource\GameCreator\crimeGame\
+├─ index.html
+├─ developer.html
+├─ firestore.rules
+├─ assets\
+│  ├─ css\
+│  │  ├─ game.css                 # 게임·팝업·모바일·애니메이션
+│  │  └─ developer.css
+│  ├─ js\
+│  │  ├─ case-data.js             # 개요, 라운드, 동료, 시간의 방, 결말
+│  │  ├─ state.js                 # 단일 상태, localStorage 저장·복구
+│  │  ├─ popup.js                 # 중앙 dialog, 포커스, 홈·닫기, busy
+│  │  ├─ puter-ai.js              # Puter 로드, 동료·최종·집사 AI 계약
+│  │  ├─ final-evaluation.js      # 6항목 정답·부분정답 채점
+│  │  ├─ firebase-config.js       # 공개 Firebase 웹 설정
+│  │  ├─ firebase-ranking.js      # Auth·Firestore 기록·랭킹
+│  │  ├─ app-round11.js           # 게임 오케스트레이션 소스 진입점
+│  │  ├─ game-round54.bundle.js   # 실제 index.html이 로드하는 배포 번들
+│  │  └─ social-share.js
+│  ├─ images\                     # ROUND 2~4, ENDING 1~4, UI 아이콘
+│  ├─ companion-*-v4.jpg          # 동료 4명 초상화
+│  └─ electrical-room.png         # ROUND 1
+└─ docs\design\                   # 현행 기획·설계 문서</div>
+    <div class="info"><b>수정 원칙:</b> 모듈 소스를 고친 뒤 반드시 번들을 다시 생성한다. <code>app-round11.js</code>만 바꾸고 <code>game-round54.bundle.js</code>를 빌드하지 않으면 운영 화면에는 반영되지 않는다.</div>
 
-실패 401:
-{"ok":false,"error":"INVALID_GOOGLE_TOKEN"}
-
-검증 코드의 필수 호출:
-id_token.verify_oauth2_token(credential, requests.Request(), GOOGLE_WEB_CLIENT_ID)</div>
-    <p><code>google_verify.py</code>는 <code>host=127.0.0.1</code>로만 바인딩하고 Waitress로 실행한다. Classic ASP의 <code>google_verify.asp</code>는 <code>WinHttp.WinHttpRequest.5.1</code>로 로컬 POST 후 JSON을 읽는다. <code>tokeninfo</code> 엔드포인트는 Google 문서상 디버깅용이므로 운영 구현에 사용하지 않는다.</p>
-    <div class="code"># requirements.txt
-google-auth&gt;=2.0,&lt;3.0
-Flask&gt;=3.0,&lt;4.0
-waitress&gt;=3.0,&lt;4.0
-
-# 필수 서버 환경변수
-GOOGLE_WEB_CLIENT_ID=웹 애플리케이션 Client ID
-CRIME_AUTH_INTERNAL_KEY=32바이트 이상 무작위 내부 키</div>
-    <div class="warn"><b>Client ID 준비:</b> 설치형 OAuth 클라이언트나 다른 프로젝트의 비밀키를 재사용하지 않는다. <code>sidak.kr</code>의 승인된 JavaScript 원본을 가진 별도 Web Client ID가 필요하다. Client Secret은 HTML/JS에 절대 포함하지 않는다.</div>
-    <div class="card source"><p><a href="https://developers.google.com/identity/gsi/web/guides/display-button">Google 공식 로그인 버튼</a> · <a href="https://developers.google.com/identity/gsi/web/guides/integrate">웹 통합 고려사항</a> · <a href="https://developers.google.com/identity/gsi/web/guides/verify-google-id-token">서버 ID 토큰 검증</a></p></div>
-
-    <h2 id="ranking">13. 공식 기록과 랭킹</h2>
-    <div class="code">official_time_ms = DATEDIFF_BIG(millisecond, started_at, completed_at) + penalty_ms
-
-ORDER BY
-  solved DESC,
-  questions_used ASC,
-  official_time_ms ASC,
-  completed_at ASC</div>
-    <table>
-      <thead><tr><th>필드</th><th>표시</th><th>서버 계산</th></tr></thead>
-      <tbody>
-        <tr><td><code>solved</code></td><td>해결 / 미해결</td><td>서버 정답 규칙으로만 결정</td></tr>
-        <tr><td><code>questions_used</code></td><td>질문 N회</td><td>commit된 질문 개수</td></tr>
-        <tr><td><code>official_time_ms</code></td><td>MM:SS 또는 HH:MM:SS</td><td>서버 경과 + 페널티</td></tr>
-        <tr><td><code>rank</code></td><td>전체 N위</td><td><code>ROW_NUMBER()</code> 동일 정렬</td></tr>
-      </tbody>
-    </table>
-    <p>공개 랭킹은 Google 이메일을 표시하지 않는다. 표시 이름은 Google 프로필 이름을 기본으로 하되 20자 제한·HTML escape를 적용한다. 같은 이름이 있어도 계정은 <code>google_sub</code>로 구분한다.</p>
-
-    <h2 id="resume">14. 1회 제한·중단 재개</h2>
-    <table>
-      <thead><tr><th>DB 상태</th><th>접속 시 행동</th><th>화면</th></tr></thead>
-      <tbody>
-        <tr><td>attempt 없음</td><td>“사건 시작” 확인 후 insert</td><td>ROUND 1 시작 팝업</td></tr>
-        <tr><td><code>in_progress</code></td><td>새 attempt를 만들지 않고 현재 state 반환</td><td>“이어서 진행” 팝업</td></tr>
-        <tr><td><code>completed</code></td><td>start API는 <code>ATTEMPT_LOCKED</code></td><td>내 결과·전체 해설·랭킹만</td></tr>
-      </tbody>
-    </table>
-    <div class="code">// attempt_start.asp 의 핵심 트랜잭션 의사코드
-BEGIN TRANSACTION
-SELECT attempt_id, status FROM CrimeAttempts WITH (UPDLOCK, HOLDLOCK)
- WHERE user_id=@userId AND case_id=@caseId;
-
-IF completed: COMMIT; return ATTEMPT_LOCKED
-IF in_progress: COMMIT; return existing attempt state
-IF missing: INSERT attempt; COMMIT; return new attempt state</div>
-
-    <h2 id="mobile">15. 모바일 CSS 계약</h2>
-    <div class="code">.popup-layer {
-  position: fixed; inset: 0; z-index: 1000;
-  display: grid; place-items: center;
-  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
-  background: rgba(0,0,0,.78);
-}
-.game-popup {
-  width: min(680px, 100%);
-  max-height: 92dvh;
-  overflow: auto;
-  overscroll-behavior: contain;
-}
-@media (max-width: 700px) {
-  .popup-actions, .companion-grid, .suggestion-list { grid-template-columns: 1fr; }
-  .popup-action { width: 100%; min-height: 56px; }
-  .round-image { width: auto; min-width: 835px; height: 470px; object-fit: cover; }
-  .round-image-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    <h2 id="state">4. 단일 상태 모델</h2>
+    <div class="code">state = {
+  mode: "demo",
+  user: null,
+  attempt: {
+    id, status, phase, roundNo,
+    clueIds, questionCount, totalQuestions,
+    penaltyMs, startedAt, completedAt, solved
+  },
+  hints: {},
+  timeRoomVisits: {},
+  questions: [],
+  finalDraft: { victim, killer, place, method, motive, truth },
+  leader: null,
+  popup: null,
+  busy: false
 }</div>
-    <ul class="check"><li>375px, 390px, 430px에서 팝업 좌우 잘림 없음.</li><li>모바일 키보드가 열려도 질문 입력과 확정 버튼 접근 가능.</li><li>그림은 비율을 찌그러뜨리지 않고 가로 이동 또는 확대.</li><li>팝업 중 메인화면 스크롤·터치 차단.</li><li>선택 후 새 결과 팝업 상단이 보이도록 팝업 내부 scrollTop=0.</li><li>브라우저 뒤로가기 시 게임 종료 대신 확인 팝업 또는 현재 상태 유지.</li></ul>
-
-    <h2 id="errors">16. 오류·복구 처리</h2>
     <table>
-      <thead><tr><th>오류 코드</th><th>사용자 문구</th><th>복구</th></tr></thead>
+      <thead><tr><th>필드</th><th>불변조건</th><th>저장</th></tr></thead>
       <tbody>
-        <tr><td><code>AUTH_REQUIRED</code></td><td>Google 로그인이 필요합니다.</td><td>로그인 팝업</td></tr>
-        <tr><td><code>ATTEMPT_LOCKED</code></td><td>이미 완료한 사건입니다. 기록을 확인하세요.</td><td>결과 화면</td></tr>
-        <tr><td><code>PHASE_CONFLICT</code></td><td>진행 상태가 변경되었습니다. 최신 상태를 불러옵니다.</td><td>state API 재조회</td></tr>
-        <tr><td><code>QUESTION_LIMIT</code></td><td>이번 라운드의 질문 3회를 모두 사용했습니다.</td><td>라운드 요약</td></tr>
-        <tr><td><code>AI_TIMEOUT</code></td><td>집사의 응답이 늦어 기본 판정으로 처리했습니다.</td><td>폴백 후 commit</td></tr>
-        <tr><td><code>NETWORK_ERROR</code></td><td>연결이 불안정합니다. 저장 상태를 다시 확인합니다.</td><td>중복 POST 금지, state 재조회</td></tr>
-        <tr><td><code>CONFIG_MISSING</code></td><td>게임 서버 설정이 완료되지 않았습니다.</td><td>진행 차단, 운영 로그</td></tr>
-      </tbody>
-    </table>
-    <p>모든 POST는 고유 <code>requestId</code>를 포함한다. 네트워크가 끊겼다고 같은 요청을 무조건 다시 보내지 말고 먼저 state를 재조회한다.</p>
-
-    <h2 id="security">17. 보안·개인정보 체크</h2>
-    <ul class="check"><li>정답·금지 키워드·최종 해설을 초기 HTML/JS 번들에 넣지 않고 서버 include에서 관리한다.</li><li>모든 SQL은 ADODB Command Parameter 사용. 문자열 연결 SQL 금지.</li><li>JSON 출력, 화면 출력 모두 escape 적용.</li><li>Session 쿠키에 Secure·HttpOnly·SameSite 설정을 IIS에서 적용.</li><li>Google ID 토큰은 서버에서 검증 후 즉시 폐기하고 DB에 원문 저장 금지.</li><li>랭킹에는 이메일, google_sub, 내부 user_id를 반환하지 않는다.</li><li>question API 분당 요청 제한과 attempt 소유권 검사를 적용.</li><li>동료 AI에 현재 라운드 공개 정보만 전달.</li><li>운영 오류 응답에 연결 문자열·SQL·토큰·파일 경로를 포함하지 않는다.</li></ul>
-
-    <h2 id="order">18. 낮은 모델이 따라야 할 구현 순서</h2>
-    <table>
-      <thead><tr><th>순서</th><th>작업</th><th>검증 후 다음으로</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>기존 파일 백업·자산 존재 확인. 새 폴더 트리 생성.</td><td>경로와 파일 목록 출력</td></tr>
-        <tr><td>2</td><td>SQL 스키마·CASE 01 seed 작성.</td><td>테이블·고유 제약·seed 조회 성공</td></tr>
-        <tr><td>3</td><td>ASP 공통 include: DB, JSON, auth, state guard.</td><td>빈 API health 응답과 UTF-8 확인</td></tr>
-        <tr><td>4</td><td>Google 로그인·auth status·logout.</td><td>유효/무효/만료 토큰 케이스 확인</td></tr>
-        <tr><td>5</td><td>attempt start/state와 1회 제한.</td><td>신규·재개·완료 잠금 3경로 확인</td></tr>
-        <tr><td>6</td><td>index HUD, popup.js, 모바일 팝업 CSS.</td><td>가짜 상태로 모든 팝업 시각 확인</td></tr>
-        <tr><td>7</td><td>단서·동료·질문·라운드 advance API와 UI.</td><td>ROUND 1 전체 완료 후 ROUND 2 자동 팝업</td></tr>
-        <tr><td>8</td><td>동일 구조로 ROUND 2~4 데이터 연결.</td><td>각 라운드 단서·질문 수 독립 확인</td></tr>
-        <tr><td>9</td><td>최종 답안·해설·결과·랭킹.</td><td>정답/오답 모두 결과 도달</td></tr>
-        <tr><td>10</td><td>모바일 5개 폭, 재접속, 중복 요청, 보안 검사.</td><td>인수 테스트 전부 통과 후 배포</td></tr>
-      </tbody>
-    </table>
-    <div class="warn"><b>작업 금지:</b> 1~5가 완성되기 전에 서버 없는 가짜 랭킹을 만들지 않는다. 한 파일에 HTML/CSS/JS/정답/DB 코드를 다시 몰아넣지 않는다. 오류를 무시하고 다음 단계로 진행하지 않는다.</div>
-
-    <h2 id="tests">19. 필수 테스트 케이스</h2>
-    <table>
-      <thead><tr><th>ID</th><th>시나리오</th><th>기대 결과</th></tr></thead>
-      <tbody>
-        <tr><td>AUTH-01</td><td>비로그인 사건 시작</td><td>Google 로그인 팝업, attempt 생성 없음</td></tr>
-        <tr><td>AUTH-02</td><td>위조 ID 토큰</td><td>401, Session/사용자 생성 없음</td></tr>
-        <tr><td>ATT-01</td><td>첫 로그인·첫 시작</td><td>attempt 1개, ROUND 1 INTRO</td></tr>
-        <tr><td>ATT-02</td><td>진행 중 재접속</td><td>기존 phase·단서·질문 복구</td></tr>
-        <tr><td>ATT-03</td><td>완료 후 재시작</td><td>409 ATTEMPT_LOCKED, 결과로 이동</td></tr>
-        <tr><td>CLUE-01</td><td>같은 단서 두 번 클릭</td><td>레코드 1개, 진행도 1회만 증가</td></tr>
-        <tr><td>TEAM-01</td><td>같은 동료 재클릭</td><td>기존 의견 동일 표시, AI 재호출 없음</td></tr>
-        <tr><td>TEAM-02</td><td>ROUND 1 의견에서 금화 언급</td><td>금지 검사 실패 → 고정 폴백</td></tr>
-        <tr><td>Q-01</td><td>추천 질문 선택 후 취소</td><td>질문 수·시간 증가 없음</td></tr>
-        <tr><td>Q-02</td><td>질문 확정</td><td>해당 라운드 +1, penalty +60000</td></tr>
-        <tr><td>Q-03</td><td>네 번째 질문 요청</td><td>409 QUESTION_LIMIT, DB 변화 없음</td></tr>
-        <tr><td>Q-04</td><td>Puter 실패</td><td>폴백 판정 저장, 진행 가능</td></tr>
-        <tr><td>ROUND-01</td><td>세 번째 질문 commit</td><td>ROUND_SUMMARY 팝업 자동 전환</td></tr>
-        <tr><td>ROUND-02</td><td>ROUND 4 완료</td><td>다음 그림 아닌 FINAL_INTRO</td></tr>
-        <tr><td>FINAL-01</td><td>정답 제출</td><td>solved=true, 해설·결과·랭킹</td></tr>
-        <tr><td>FINAL-02</td><td>오답 제출</td><td>solved=false여도 전체 해설·결과 표시</td></tr>
-        <tr><td>RANK-01</td><td>해결·질문 수 동률</td><td>official_time_ms 순 정렬</td></tr>
-        <tr><td>MOB-375</td><td>375×667 전체 플레이</td><td>팝업·그림·버튼 잘림 없음</td></tr>
-        <tr><td>MOB-KBD</td><td>질문 입력 중 키보드 표시</td><td>입력·확정 버튼 모두 접근 가능</td></tr>
-        <tr><td>NET-01</td><td>POST 응답 전 연결 끊김</td><td>state 재조회, 질문·페널티 중복 없음</td></tr>
+        <tr><td><code>roundNo</code></td><td>1~4 정수</td><td>localStorage</td></tr>
+        <tr><td><code>clueIds</code></td><td>중복 제거, 최대 12개</td><td>localStorage</td></tr>
+        <tr><td><code>questionCount</code></td><td>현재 라운드 0~3</td><td>localStorage</td></tr>
+        <tr><td><code>totalQuestions</code></td><td>전체 0~12</td><td>localStorage·최종 Firebase</td></tr>
+        <tr><td><code>penaltyMs</code></td><td>질문 +60,000ms, 시간의 방 +120,000ms 누적</td><td>localStorage·공식 시간에 포함</td></tr>
+        <tr><td><code>hints</code></td><td><code>round:companionId</code> 또는 <code>final:companionId</code></td><td>localStorage</td></tr>
+        <tr><td><code>timeRoomVisits</code></td><td>라운드별 0~3</td><td>localStorage·합계만 Firebase</td></tr>
+        <tr><td><code>questions</code></td><td>라운드, 질문, 판정 category, 표시 문장</td><td>localStorage</td></tr>
       </tbody>
     </table>
 
-    <h2 id="handoff">20. 낮은 모델에 그대로 전달할 작업 지시문</h2>
-    <div class="card strict"><h3>복사 시작</h3><div class="code">D:\soccerstarWebSource\GameCreator\crimeGame\docs\design\popup-four-round-mystery-game-plan.html 과
-D:\soccerstarWebSource\GameCreator\crimeGame\docs\design\popup-four-round-coding-spec.html 을 처음부터 끝까지 읽어라.
+    <h2 id="machine">5. 클라이언트 상태 머신</h2>
+    <div class="code">CASE_HOME
+→ CASE_START
+→ ROUND_INTRO
+→ IMAGE_REVEAL
+→ CLUE_SELECT ↔ CLUE_RESULT
+→ COMPANION_SELECT ↔ COMPANION_RESULT
+→ QUESTION_SELECT → QUESTION_PENDING → QUESTION_RESULT
+→ ROUND_SUMMARY
+→ (ROUND_INTRO of next round | FINAL_ANSWER)
+→ ENDING_STORY
+→ RESULT</div>
+    <table>
+      <thead><tr><th>phase</th><th>진입 함수</th><th>정상 다음 단계</th></tr></thead>
+      <tbody>
+        <tr><td>CASE_START</td><td><code>openCaseStart()</code></td><td>ROUND_INTRO</td></tr>
+        <tr><td>ROUND_INTRO</td><td><code>openRoundIntro()</code></td><td>IMAGE_REVEAL</td></tr>
+        <tr><td>IMAGE_REVEAL</td><td><code>openImage()</code></td><td>CLUE_SELECT</td></tr>
+        <tr><td>CLUE_SELECT / RESULT</td><td><code>openClueSelect()</code>, <code>openClue()</code></td><td>단서 3개 후 COMPANION_SELECT</td></tr>
+        <tr><td>COMPANION_SELECT / RESULT</td><td><code>openCompanionSelect()</code>, <code>openCompanion()</code></td><td>QUESTION_SELECT</td></tr>
+        <tr><td>QUESTION_*</td><td><code>openQuestionSelect()</code> 등</td><td>3회 완료 또는 포기 후 ROUND_SUMMARY</td></tr>
+        <tr><td>ROUND_SUMMARY</td><td><code>openRoundSummary()</code></td><td>다음 ROUND_INTRO 또는 FINAL_ANSWER</td></tr>
+        <tr><td>FINAL_ANSWER</td><td><code>openFinalAnswer()</code></td><td>ENDING_STORY</td></tr>
+        <tr><td>ENDING_STORY</td><td><code>openEnding(index)</code></td><td>네 장 후 RESULT</td></tr>
+        <tr><td>RESULT</td><td><code>openResult()</code></td><td>랭킹·기록 등록·내막 재열람</td></tr>
+      </tbody>
+    </table>
+    <p class="lead"><code>openByPhase()</code>는 새로고침 복구와 사건 기록에서 현재 수사로 돌아갈 때 같은 라우팅 테이블을 사용한다.</p>
 
-목표:
-CASE 01 “마크의 마지막 수리”를 4라운드 중앙 팝업형 웹게임으로 구현한다.
+    <h2 id="popup">6. 중앙 팝업 DOM·접근성 계약</h2>
+    <div class="code">#popupRoot
+└─ .popup-layer
+   ├─ .popup-mini-timer
+   │  ├─ .popup-mini-home
+   │  └─ #popupMiniTime
+   └─ article.game-popup[role="dialog"][aria-modal="true"]
+      ├─ .popup-head
+      ├─ .popup-body
+      └─ .popup-actions</div>
+    <ul>
+      <li><code>openPopup()</code>은 이전 keydown 핸들러를 제거하고 새 팝업 전체를 한 번에 교체한다.</li>
+      <li>배경 body는 <code>position: fixed</code>, <code>overflow: hidden</code>으로 잠근다.</li>
+      <li>Tab/Shift+Tab 포커스 트랩을 적용하고 첫 활성 버튼에 포커스한다.</li>
+      <li><code>dismissible</code>인 기록·랭킹만 닫기 버튼, 배경 클릭, Escape를 허용한다.</li>
+      <li>미니 홈은 팝업을 닫고 <code>#caseDashboard</code>로 이동한다. 진행 상태를 삭제하지 않는다.</li>
+      <li><code>setPopupBusy()</code>는 AI·로그인 처리 중 오버레이를 표시하고 버튼·입력을 임시 비활성화한다.</li>
+    </ul>
 
-필수 규칙:
-1. 기술 스택은 HTML/CSS/Vanilla JS ES Modules + Classic ASP + MSSQL이다.
-2. 모든 선택과 결과는 #popupRoot 중앙 팝업에서 진행한다.
-3. 각 라운드는 그림 1장 → 단서 3개 → 동료 → 질문 1~3개 → 요약 순서다.
-4. 질문 3개 완료 직후 다음 라운드 안내 팝업을 자동 표시한다.
-5. 4라운드 뒤 정답/오답 모두 전체 내막·개인 결과·랭킹을 표시한다.
-6. Google ID 토큰을 서버에서 검증하고 (user_id, case_id) UNIQUE로 1회 제한한다.
-7. 공식 시간·질문 수·최종 판정은 서버가 결정한다.
-8. 동료 재열람과 단서 재열람은 중복 비용이 없다.
-9. 375/390/430/768/1440px에서 검증한다.
-10. 구현 중 임의로 규칙을 단순화하거나 기존 패널 구조로 되돌리지 마라.
+    <h2 id="round">7. 라운드·공개 정보 구현 계약</h2>
+    <table>
+      <thead><tr><th>데이터</th><th>위치</th><th>렌더링·검증</th></tr></thead>
+      <tbody>
+        <tr><td>라운드 4개</td><td><code>ROUNDS[]</code></td><td><code>no</code>, <code>title</code>, <code>intro</code>, <code>image</code>, 단서 3개</td></tr>
+        <tr><td>단서</td><td><code>round.clues[]</code></td><td>사진 물음표와 하단 카드가 같은 <code>clue.id</code>를 연다.</td></tr>
+        <tr><td>시간의 방</td><td><code>TIME_ROOM_HINTS[roundNo]</code></td><td>배열 순서대로 1개씩 공개, 매번 +120,000ms</td></tr>
+        <tr><td>AI 최신 힌트 핵심어</td><td><code>TIME_ROOM_HINT_TERMS</code></td><td>동료 AI 출력이 최신 공개 정보를 반영했는지 검증</td></tr>
+        <tr><td>사건 기록</td><td><code>openHistory()</code></td><td>현재까지 공개된 사진·단서·시간의 방·집사 문답만 구성</td></tr>
+      </tbody>
+    </table>
+    <div class="good"><b>동료 공유:</b> <code>currentCompanionContext()</code>는 현재까지 획득한 모든 시간의 방 사실과 집사 문답을 모은다. AI 응답을 처음 생성할 때 그 시점의 공유 개수를 함께 저장한다. 이미 생성된 의견은 새 정보 때문에 자동 변경하지 않는다.</div>
 
-작업 순서:
-이 설계서 18장의 1~10 순서를 그대로 따른다.
-각 단계가 끝날 때 변경 파일, 검증 결과, 남은 위험을 보고한다.
-Classic ASP 파일을 배포하기 전 validate-asp 검사를 실행한다.
-전체 테스트 19장을 통과하기 전 완료라고 보고하지 마라.</div><h3>복사 끝</h3></div>
+    <h2 id="timer">8. 누적 시간 계산</h2>
+    <div class="code">elapsedMs =
+  max(0, (completedAt || Date.now()) - startedAt)
+  + penaltyMs</div>
+    <ul>
+      <li>질문 판정 성공 뒤 <code>penaltyMs += 60000</code>.</li>
+      <li>시간의 방 새 정보 공개 직전 <code>penaltyMs += 120000</code>.</li>
+      <li>완료 시 <code>completedAt</code>을 고정해 결과 화면에서 시간이 더 늘지 않게 한다.</li>
+      <li>5분 이상 HUD <code>warning</code>, 10분 이상 <code>danger</code>.</li>
+      <li><code>flashPenalty()</code>가 HUD와 팝업 타이머에 +1:00 또는 +2:00 애니메이션을 표시한다.</li>
+    </ul>
+
+    <h2 id="ai">9. Puter AI 어댑터</h2>
+    <table>
+      <tbody>
+        <tr><th>로더</th><td><code>https://js.puter.com/v2/?game={timestamp}</code>를 동적으로 삽입. <code>file://</code>에서는 사용하지 않음</td></tr>
+        <tr><th>모델 후보</th><td><code>gpt-5.4-nano</code> → 실패 시 <code>gpt-5-nano</code></td></tr>
+        <tr><th>일반 요청 제한</th><td>요청당 10초</td></tr>
+        <tr><th>라운드 동료 전체 제한</th><td>20초, 최대 3회 생성·검증</td></tr>
+        <tr><th>최종 동료 요청 제한</th><td>요청당 13초, 전체 32초, 최대 3회</td></tr>
+        <tr><th>파라미터</th><td><code>reasoning_effort: minimal</code>, <code>verbosity: low</code>, 낮은 temperature</td></tr>
+      </tbody>
+    </table>
+    <h3>라운드 동료 출력</h3>
+    <div class="code">{"question":"예·아니요형 질문 한 문장?","comment":"페르소나가 드러나는 짧은 제안"}</div>
+    <p>질문 6~120자, 의견 2~180자, 물음표 종료, 한 문장 한 사실을 강제한다. HTML·코드펜스·내부 지시·집사 사건 관여·동료 이름의 사건 인물화·미래 키워드·정답 단정을 거절한다.</p>
+    <h3>최종 동료 출력</h3>
+    <div class="code">VICTIM::피해자 가설
+KILLER::가해자 가설
+PLACE::장소 가설
+METHOD::사망 원인 가설
+MOTIVE::동기 가설
+TRUTH::숨겨진 진실 가설
+COMMENT::종합 의견</div>
+    <p>각 필드 2~220자, 종합 의견 18~500자. “알 수 없음”, 내부 ID, 게임 밖 용어, 공개 기록에 없는 폭력 수단 등을 거절한다. 검증을 통과한 결과만 <code>state.hints</code>에 저장한다.</p>
+
+    <h2 id="question">10. 집사 AI 판정 계약</h2>
+    <p><code>judgeQuestion(question, roundNo)</code>은 전체 사건 확정 사실표와 엄격한 논리 규칙을 AI에 전달한다. 공개 라운드와 관계없이 질문의 진실 여부는 전체 사건 정답을 기준으로 판정하지만 플레이어 화면에는 카테고리 문장만 노출한다.</p>
+    <table>
+      <thead><tr><th>category</th><th>화면 문장</th><th>핵심 규칙</th></tr></thead>
+      <tbody>
+        <tr><td>YES</td><td>네, 그렇습니다.</td><td>주어·목적어를 포함한 모든 내용이 참</td></tr>
+        <tr><td>NO</td><td>아니요, 그렇지 않습니다.</td><td>모든 내용이 거짓 또는 확정 사실과 반대</td></tr>
+        <tr><td>MAYBE</td><td>그럴 수도 있습니다.</td><td>복합 질문 일부만 참, 대명사 대상 불명확</td></tr>
+        <tr><td>IRRELEVANT</td><td>중요하지 않습니다.</td><td>사건 무관 또는 게임 호스트 집사의 사건 관여 전제</td></tr>
+      </tbody>
+    </table>
+    <p>첫 판정이 MAYBE이면 재판정 전용 프롬프트로 다시 확인한다. Puter 실패·시간 초과·형식 오류가 계속되면 질문을 저장하지 않고 비용도 추가하지 않은 채 입력 화면으로 돌아간다.</p>
+
+    <h2 id="final">11. 최종 발의·채점 구현</h2>
+    <p><code>finalDraft</code>의 여섯 필드는 입력할 때마다 localStorage에 저장한다. 모두 비어 있지 않아야 <code>submitFinal()</code>이 실행된다.</p>
+    <table>
+      <thead><tr><th>키</th><th>정답 정규식 핵심</th><th>배점</th></tr></thead>
+      <tbody>
+        <tr><td>victim</td><td><code>마크</code></td><td rowspan="6">정답 2점 단위 내부값 = 화면 1점<br>부분정답 1 = 0.5점<br>오답 0점</td></tr>
+        <tr><td>killer</td><td><code>그랜트</code></td></tr>
+        <tr><td>place</td><td><code>배전실</code></td></tr>
+        <tr><td>method</td><td><code>감전|전기 충격</code></td></tr>
+        <tr><td>motive</td><td>금화·절도·장부·과거 기록 + 은폐·발각 방지</td></tr>
+        <tr><td>truth</td><td>물·전도성 용액 + 전기·감전 + 차단기·사고 위장</td></tr>
+      </tbody>
+    </table>
+    <p><code>score2 === 12</code>일 때만 해결이다. 제출 즉시 완료 시각을 고정하고 ENDING 4장 뒤 RESULT에서 사용자 답, 정답 기준, 판정 이유를 항목별 표시한다.</p>
+
+    <h2 id="firebase">12. Firebase Authentication·Firestore</h2>
+    <table>
+      <tbody>
+        <tr><th>SDK</th><td>Google CDN ES Module <code>12.16.0</code>, 필요한 app/auth/firestore만 동적 import</td></tr>
+        <tr><th>Auth</th><td><code>GoogleAuthProvider</code> + <code>signInWithPopup</code>, <code>browserLocalPersistence</code></td></tr>
+        <tr><th>승인 도메인</th><td>Identity Toolkit 프로젝트 조회로 현재 hostname이 승인 목록인지 사전 확인</td></tr>
+        <tr><th>Collection</th><td><code>crime_mark_last_repair_v1</code></td></tr>
+        <tr><th>Document ID</th><td>로그인 사용자 UID — 사건당 계정 한 건</td></tr>
+        <tr><th>저장 필드</th><td><code>caseId, displayName, score2, solved, questionsUsed, officialTimeMs, timeRoomVisits, submittedAt</code></td></tr>
+        <tr><th>정렬</th><td>score2 내림차순 → questionsUsed 오름차순 → officialTimeMs 오름차순, 클라이언트에서 상위 100개</td></tr>
+      </tbody>
+    </table>
+    <p><code>saveCloudRecord()</code>는 Firestore transaction으로 기존 UID 문서가 있으면 <code>ALREADY_RECORDED</code>를 발생시킨다. 보안 규칙은 public read, 로그인 UID 본인의 create만 허용하고 update/delete를 모두 거부한다.</p>
+
+    <h2 id="storage">13. localStorage 계약</h2>
+    <table>
+      <thead><tr><th>키</th><th>용도</th><th>버전</th></tr></thead>
+      <tbody>
+        <tr><td><code>markMysteryProgressV1</code></td><td>진행 상태, 동료 의견, 시간의 방, 문답, 최종 초안</td><td>payload <code>version: 1</code>, <code>caseId: mark-death-v1</code></td></tr>
+        <tr><td><code>markMysteryLocalLeaderV2</code></td><td>이 기기의 최고 점수·질문 수·시간</td><td>V2 키</td></tr>
+      </tbody>
+    </table>
+    <p>복구 시 타입·길이·범위를 다시 제한한다. 저장된 <code>QUESTION_PENDING</code>은 <code>QUESTION_SELECT</code>로 바꾸고, 알 수 없는 phase는 <code>ROUND_INTRO</code>로 복구한다. 완료된 상태도 유지되어 “내 결과 보기”가 열린다.</p>
+
+    <h2 id="mobile">14. 모바일 CSS 계약</h2>
+    <table>
+      <thead><tr><th>대상</th><th>700px 이하</th><th>370px 이하</th></tr></thead>
+      <tbody>
+        <tr><td>HUD</td><td>timer / leader / history / ranking 4영역, brand·round·question 숨김</td><td>동일 구조 유지</td></tr>
+        <tr><td>팝업</td><td>폭 <code>calc(100vw - 12px)</code>, 최대 높이 <code>calc(100dvh - 58px)</code></td><td>제목 21px</td></tr>
+        <tr><td>액션</td><td>항상 1열, 버튼 최소 54px</td><td>동일</td></tr>
+        <tr><td>동료 선택</td><td>2열, 카드 중앙 정렬</td><td>1열</td></tr>
+        <tr><td>동료 결과</td><td>초상화 위·말풍선 아래, 말풍선 꼬리 위</td><td>동일</td></tr>
+        <tr><td>사진</td><td>16:9, <code>object-fit: contain</code>, 가로 오버플로 없음</td><td>동일</td></tr>
+        <tr><td>폼</td><td>최종 답안과 질문 입력 1열</td><td>동일</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="errors">15. 오류와 복구 정책</h2>
+    <table>
+      <thead><tr><th>오류</th><th>사용자 처리</th><th>상태 처리</th></tr></thead>
+      <tbody>
+        <tr><td>Puter 미로드·네트워크 실패</td><td>몰입형 재시도 문구와 “다시 의견 듣기”</td><td>진행·시간·질문 수 유지</td></tr>
+        <tr><td>동료 응답 검증 실패</td><td>공개 기록을 다시 대조 중이라고 표시</td><td>잘못된 응답 미저장, 재호출 가능</td></tr>
+        <tr><td>집사 판정 실패</td><td>시간이 늘지 않았음을 알리고 질문 화면 복귀</td><td>질문·페널티 미반영</td></tr>
+        <tr><td>Firebase 미설정·승인 도메인 누락</td><td>로컬 기록만 표시하고 원인을 안내</td><td>가짜 공식 랭킹 생성 금지</td></tr>
+        <tr><td>로그인 팝업 차단·취소</td><td>전용 한국어 메시지</td><td>결과와 localStorage 유지</td></tr>
+        <tr><td>이미 등록된 UID</td><td>계정당 1회 안내 후 랭킹 표시</td><td>기존 문서 변경 금지</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="build">16. 소스 빌드와 배포</h2>
+    <h3>번들 생성</h3>
+    <div class="code">npx --yes esbuild assets/js/app-round11.js \
+  --bundle \
+  --format=iife \
+  --target=es2020 \
+  --outfile=assets/js/game-round54.bundle.js</div>
+    <h3>정적 배포 필수 파일</h3>
+    <p><code>index.html</code>, <code>developer.html</code>, <code>assets/**</code>, 공개 문서 <code>docs/**</code>. 런타임에 ASP·PHP·Node 서버 코드는 필요하지 않다. Firebase 규칙은 배포 서버 파일이 아니라 Firebase Console에 별도로 게시한다.</p>
+    <h3>캐시 무효화</h3>
+    <p>CSS나 번들 변경 시 <code>index.html</code>의 query version을 올린다. 파일명과 query가 다를 수 있으므로 배포 후 실제 Network 응답 내용까지 확인한다.</p>
+    <h3>서비스 조건</h3>
+    <p>HTTPS 권장, Firebase 승인 도메인에 운영 hostname 등록, Puter.js와 Google Firebase CDN 접근 허용이 필요하다.</p>
+
+    <h2 id="tests">17. 필수 자동·수동 검수</h2>
+    <ul class="check">
+      <li>모듈 소스 구문 검사와 esbuild 성공.</li>
+      <li>번들에 최신 사건 데이터·AI 프롬프트·UI 변경이 포함됐는지 문자열 검증.</li>
+      <li>390×844, 360×800, 768×1024, 1440×900에서 가로 오버플로 0.</li>
+      <li>ROUND 1~4 단서 3개씩 열기, 시간의 방 3회 제한과 비용 검증.</li>
+      <li>동료 의견 재열람과 새 공개 정보의 미청취 동료 공유 검증.</li>
+      <li>추천 질문 선택, 직접 입력, 질문 확인에서 뒤로가기, 성공 후 +1분 검증.</li>
+      <li>YES·NO·MAYBE·IRRELEVANT 대표 질문 회귀 테스트.</li>
+      <li>새로고침 후 단서·질문·힌트·최종 초안·현재 phase 복구.</li>
+      <li>최종 동료 의견 6필드 출력과 발의서 채택.</li>
+      <li>정답·부분정답·오답 조합별 0~6점 채점과 네 장 결말 공개.</li>
+      <li>Firebase 최초 등록, 동일 계정 두 번째 등록 거절, 랭킹 정렬.</li>
+      <li>운영 URL에서 콘솔 오류 0, 정적 파일 404·500 없음.</li>
+    </ul>
+
+    <div class="linkbar">
+      <a href="popup-four-round-mystery-game-plan.html">현행 통합 기획서</a>
+      <a href="mark-death-mystery-detailed-design.html">상세 기능 설계서</a>
+      <a href="../">문서 목록</a>
+      <a href="../../">게임 실행</a>
+    </div>
   </main>
 </body>
 </html>
